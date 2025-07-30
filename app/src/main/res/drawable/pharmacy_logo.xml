@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- دائرة باللون الأخضر -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2z"/>
+
+    <!-- هلال باللون الأبيض -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M15,12a5,5 0 1,1 -5,-5a3.5,3.5 0 1,0 5,5z"/>
+</vector>

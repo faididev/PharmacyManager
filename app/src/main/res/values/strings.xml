@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Pharmacy Manager</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="don_t_have_an_account_register">Don\'t have an account?\nRegister</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="email_gmail_com">email@gmail.com</string>
 </resources>

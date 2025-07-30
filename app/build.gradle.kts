@@ -54,6 +54,14 @@ dependencies {
 
     // Gson (For parsing JSON)
     implementation(libs.gson)
+    implementation(libs.fragment)
+
+    // Navigation
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
+
+    // Material Design Components New Version
+    implementation(libs.material.v1110)
 
     // Unit Testing
     testImplementation(libs.junit)
