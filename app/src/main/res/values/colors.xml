@@ -32,5 +32,11 @@
     <color name="success">#66BB6A</color>
     <color name="info">#42A5F5</color>
     <color name="warning">#FFA726</color>
+    <color name="MainColor">#4CAF50</color>
+    <color name="MainBackColor">#F9F9F9</color>
+    <color name="transpirant">#00000000</color>
+    <color name="darker_main_color">#43A047</color>
+    <color name="main_text_color">#212121</color>
+    <color name="secondary_text_color">#757575</color>
 
 </resources>

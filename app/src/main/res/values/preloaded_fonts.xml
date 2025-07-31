@@ -2,5 +2,9 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/anta</item>
+        <item>@font/antic</item>
+        <item>@font/poppins_thin</item>
+        <item>@font/roboto</item>
+        <item>@font/roboto_bold</item>
     </array>
 </resources>

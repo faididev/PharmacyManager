@@ -3,7 +3,14 @@
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="don_t_have_an_account_register">Don\'t have an account?\nRegister</string>
+    <string name="don_t_have_an_account_register">NEW USER? RGISTER</string>
     <string name="forget_password">Forget Password?</string>
     <string name="email_gmail_com">email@gmail.com</string>
+    <string name="pharmacy_manager">Pharmacy Manager</string>
+    <string name="pharmapro">PharmaPro</string>
+    <string name="this_is_the_logo">logo_image</string>
+    <string name="username">Username</string>
+    <string name="hello_there_welcome_back">Hello There, Welcome Back</string>
+    <string name="sign_in_to_continue">Sign In to continue</string>
+    <string name="logo_text">logo_text</string>
 </resources>
