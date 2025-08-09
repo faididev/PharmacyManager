@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    >
+    tools:context=".ui.auth.SignUp"
+    android:padding="20dp">
 
     <LinearLayout
-        android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/MainBackColor"
         android:orientation="vertical"
+        android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:context=".ui.auth.LoginActivity">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/logo_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:transitionName="@string/this_is_the_logo"
             android:contentDescription="@string/this_is_the_logo"
-            android:src="@drawable/pharmacy" />
+            android:src="@drawable/pharmacy"
+            android:transitionName="@string/this_is_the_logo" />
+
 
         <TextView
             android:id="@+id/logo_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"
-            android:transitionName="@string/logo_text"
-            android:text="@string/hello_there_welcome_back"
+            android:text="@string/bonjour"
             android:textColor="@color/main_text_color"
-            android:textSize="40sp" />
+            android:textSize="40sp"
+            android:transitionName="@string/logo_text" />
 
         <TextView
             android:id="@+id/slogan_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
-            android:text="@string/sign_in_to_continue"
+            android:text="@string/signup_to_start"
             android:textColor="@color/secondary_text_color"
             android:textSize="18sp"
             android:transitionName="@string/logo_desc" />
@@ -66,7 +66,22 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto" />
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:transitionName="@string/logo_email">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,48 +102,55 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:layout_width="210dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="5dp"
-                android:background="@color/transpirant"
-                android:elevation="0dp"
-                android:text="@string/forget_password"
-                android:fontFamily="@font/roboto"
-                android:textSize="16sp"
-                android:textColor="@color/main_text_color" />
-
-            <Button
-                android:id="@+id/login_btn"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/confirm_password"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:backgroundTint="@color/MainColor"
-                android:text="@string/login"
-                android:fontFamily="@font/roboto"
-                android:textSize="16sp"
-                android:textColor="@color/MainBackColor"
-                android:textAllCaps="true"
-                android:transitionName="@string/buttonlogin_trans"/>
+                android:hint="@string/confirm_password"
+                app:passwordToggleEnabled="true"
+                android:transitionName="logo_confirm_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <Button
                 android:id="@+id/signup_screen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="@color/MainColor"
+                android:fontFamily="@font/roboto"
+                android:text="@string/register"
+                android:textAllCaps="true"
+                android:textColor="@color/MainBackColor"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/signin_screen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_margin="5dp"
                 android:background="@color/transpirant"
                 android:elevation="0dp"
                 android:fontFamily="@font/roboto"
-                android:textSize="16sp"
-                android:text="@string/don_t_have_an_account_register"
+                android:text="@string/already_have_an_account"
+                android:textAllCaps="true"
                 android:textColor="@color/main_text_color"
-                android:transitionName="@string/signin_signup_trans"/>
+                android:textSize="16sp"
+                android:transitionName="@string/signin_signup_trans" />
 
         </LinearLayout>
 
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
