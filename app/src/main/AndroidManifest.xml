@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PharmacyManager">
         <activity
-            android:name=".ui.auth.SignUp"
-            android:exported="false" />
-        <activity
             android:name=".ui.auth.SignupActivity"
             android:exported="false" />
         <activity

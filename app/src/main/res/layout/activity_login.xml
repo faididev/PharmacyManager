@@ -66,7 +66,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto" />
+                    android:fontFamily="@font/roboto"
+                    android:inputType="text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,12 +107,13 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:backgroundTint="@color/MainColor"
-                android:text="@string/login"
                 android:fontFamily="@font/roboto"
-                android:textSize="16sp"
-                android:textColor="@color/MainBackColor"
+                android:onClick="loginUser"
+                android:text="@string/login"
                 android:textAllCaps="true"
-                android:transitionName="@string/buttonlogin_trans"/>
+                android:textColor="@color/MainBackColor"
+                android:textSize="16sp"
+                android:transitionName="@string/buttonlogin_trans" />
 
             <Button
                 android:id="@+id/signup_screen"

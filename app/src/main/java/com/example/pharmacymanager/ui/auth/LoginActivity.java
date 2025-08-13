@@ -17,7 +17,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pharmacymanager.R;
-import com.example.pharmacymanager.SplashActivity;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginActivity extends AppCompatActivity {
@@ -52,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         callSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this,SignUp.class);
+                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
 
                 Pair[] pairs = new Pair[7];
 
@@ -69,4 +68,50 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    public void loginUser(View view){
+        if(!validateLoginUsernameOrEmail() | !validatePassword()){
+            return;
+        }
+    }
+
+    private boolean validateLoginUsernameOrEmail() {
+        assert username.getEditText() != null;
+        String val = username.getEditText().getText().toString().trim();
+
+        String usernamePattern = "^[A-Za-z0-9._]{4,15}$";
+
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+
+        if (val.isEmpty()) {
+            username.setError("Field cannot be empty");
+            return false;
+        }
+        else if (!val.matches(usernamePattern) && !val.matches(emailRegex)) {
+            username.setError("Enter a valid username or email");
+            return false;
+        }
+        else {
+            username.setError(null);
+            username.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private boolean validatePassword(){
+        assert password.getEditText() != null;
+        String val = password.getEditText().getText().toString().trim();
+
+        if (val.isEmpty()) {
+            password.setError("Field cannot be empty");
+            return false;
+        }
+        else {
+            password.setError(null);
+            password.setErrorEnabled(false);
+            return true;
+        }
+    }
+
 }
