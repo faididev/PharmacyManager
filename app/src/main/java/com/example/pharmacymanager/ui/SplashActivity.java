@@ -1,6 +1,5 @@
-package com.example.pharmacymanager;
+package com.example.pharmacymanager.ui;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.util.Pair;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pharmacymanager.R;
 import com.example.pharmacymanager.ui.auth.LoginActivity;
 
 

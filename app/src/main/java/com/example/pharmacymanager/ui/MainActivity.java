@@ -1,4 +1,4 @@
-package com.example.pharmacymanager;
+package com.example.pharmacymanager.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.pharmacymanager.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
