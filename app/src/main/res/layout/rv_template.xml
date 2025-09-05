@@ -65,7 +65,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="@color/MainColor">
+            android:background="@color/MainBackColor">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEdit"

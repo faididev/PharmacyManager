@@ -5,7 +5,7 @@
     android:id="@+id/fragmentProducts"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.product.ListProductFragment">
+    tools:context=".ui.category.ListCategoryFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,24 +28,6 @@
             app:iconifiedByDefault="false"
             />
 
-        <!-- Horizontal RecyclerView for categories -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewCategories"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:clipToPadding="false"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:scrollbars="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchView"
-            tools:listitem="@layout/rv_product_category_template" />
-
         <!-- Vertical RecyclerView for products -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewProducts"
@@ -61,8 +43,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewCategories"
-            tools:listitem="@layout/rv_template" />
+            app:layout_constraintTop_toBottomOf="@id/searchView"
+            tools:listitem="@layout/rv_category_list_template" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -77,7 +59,7 @@
         android:contentDescription="@string/add_product"
         android:src="@drawable/nav_home"
         android:tint="@android:color/white"
-        app:backgroundTint="@color/MainBackColor"
+        app:backgroundTint="@color/MainColor"
         app:layout_anchorGravity="bottom|end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
