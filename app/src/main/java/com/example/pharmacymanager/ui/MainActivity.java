@@ -19,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.pharmacymanager.R;
+import com.example.pharmacymanager.ui.home.HomeFragment;
+import com.example.pharmacymanager.ui.product.ListProductFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -78,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_settings) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new HomeFragment()).commit();
+        }else if (id == R.id.nav_product) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragement_container, new ListProductFragment()).commit();
         } else if (id == R.id.nav_about) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new HomeFragment()).commit();

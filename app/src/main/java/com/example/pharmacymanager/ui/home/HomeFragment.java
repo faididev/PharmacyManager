@@ -1,4 +1,4 @@
-package com.example.pharmacymanager.ui;
+package com.example.pharmacymanager.ui.home;
 
 import android.os.Bundle;
 

@@ -35,4 +35,6 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="logout">Logout</string>
+    <string name="add_product">add product</string>
+    <string name="product_title">Product Title</string>
 </resources>
