@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.pharmacymanager.R;
+import com.example.pharmacymanager.ui.category.ListCategoryFragment;
 import com.example.pharmacymanager.ui.home.HomeFragment;
 import com.example.pharmacymanager.ui.product.ListProductFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -77,9 +78,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new HomeFragment()).commit();
-        } else if (id == R.id.nav_settings) {
+        } else if (id == R.id.nav_category) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragement_container, new HomeFragment()).commit();
+                    .replace(R.id.fragement_container, new ListCategoryFragment()).commit();
         }else if (id == R.id.nav_product) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new ListProductFragment()).commit();

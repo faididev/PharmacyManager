@@ -28,7 +28,7 @@
     <string name="buttonlogin_trans">buttonlogin_trans</string>
     <string name="signin_signup_trans">signin_signup_trans</string>
     <string name="logo_email">logo_email</string>
-    <string name="home">Home</string>
+    <string name="home">Accueil</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="products">Produits</string>
@@ -38,4 +38,16 @@
     <string name="add_product">add product</string>
     <string name="product_title">Product Title</string>
     <string name="category_title">Category Title</string>
+    <string name="add_new_category">ajouter une nouvelle catégorie</string>
+    <string name="category_name">nom de la catégorie</string>
+    <string name="description">Description</string>
+    <string name="add_new">Ajouter nouveau</string>
+    <string name="categories">Catégories</string>
+    <string name="back_to_list">Retour à la liste</string>
+    <string name="edit_categorie">Modifier la catégorie</string>
+    <string name="edit">Modifier</string>
+    <string name="delete">Supprimer</string>
+    <string name="category_name_or_title">Category name or title</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>
+    <string name="description_1">description :</string>
 </resources>

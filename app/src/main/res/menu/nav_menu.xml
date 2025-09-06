@@ -15,9 +15,9 @@
             android:icon="@drawable/nav_home"
             android:title="@string/products"/>
         <item
-            android:id="@+id/nav_settings"
+            android:id="@+id/nav_category"
             android:icon="@drawable/nav_settings"
-            android:title="@string/settings"/>
+            android:title="@string/categories"/>
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/nav_about"

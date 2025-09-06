@@ -50,7 +50,7 @@
 
     <!-- Floating Add Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddProduct"
+        android:id="@+id/fabAddCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

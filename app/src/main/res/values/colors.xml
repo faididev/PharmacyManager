@@ -29,6 +29,9 @@
     <color name="gray_medium">#BDBDBD</color>
     <color name="gray_dark">#616161</color>
 
+    <color name="deleteColor">#E53935</color> <!-- Red but modern -->
+    <color name="on_delete">#FFFFFF</color>   <!-- Text color on delete button -->
+
     <color name="success">#66BB6A</color>
     <color name="info">#42A5F5</color>
     <color name="warning">#FFA726</color>
