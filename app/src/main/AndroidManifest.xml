@@ -22,9 +22,6 @@
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.item_product"
-            android:exported="false" />
-        <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
         <activity

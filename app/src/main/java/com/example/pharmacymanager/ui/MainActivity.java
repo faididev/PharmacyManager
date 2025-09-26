@@ -1,5 +1,6 @@
 package com.example.pharmacymanager.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ import com.example.pharmacymanager.ui.order.AddOrderFragment;
 import com.example.pharmacymanager.ui.order.ListOrderFragment;
 import com.example.pharmacymanager.ui.product.AddProductFragment;
 import com.example.pharmacymanager.ui.product.ListProductFragment;
+import com.example.pharmacymanager.ui.auth.LoginActivity;
+import com.example.pharmacymanager.data.local.SessionManager;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +42,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("MainActivity", "onCreate called");
+        
+        // Check if user is logged in
+        SessionManager sessionManager = new SessionManager(this);
+        String token = sessionManager.getToken();
+        Log.d("MainActivity", "Token check in onCreate: " + (token != null ? "Token present (length: " + token.length() + ")" : "Token null"));
+        
+        if (token == null || token.isEmpty()) {
+            Log.w("MainActivity", "No token found, redirecting to login");
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
 
@@ -120,7 +138,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new HomeFragment()).commit();
         } else if (id == R.id.nav_logout) {
-            Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
+            // Clear session and redirect to login
+            SessionManager sessionManager = new SessionManager(this);
+            sessionManager.clear();
+            Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+            
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -159,12 +185,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
-    /*@Override
-    public void onBackPressed(){
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }else {
-            super.onBackPressed();
-        }
-    }*/
 }

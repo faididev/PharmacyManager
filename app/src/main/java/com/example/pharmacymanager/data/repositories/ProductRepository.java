@@ -1,7 +1,6 @@
 package com.example.pharmacymanager.data.repositories;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -14,9 +13,6 @@ import com.example.pharmacymanager.data.remote.ApiClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,68 +73,6 @@ public class ProductRepository {
         }
     }
 
-    public void createProductWithImage(String name, String sku, String description, int quantity, 
-                                     int total, String manufactureDate, String expiryDate, 
-                                     int categoryId, double price, Uri imageUri, ProductCallback callback) {
-        try {
-            // Prepare form data
-            Map<String, String> params = new HashMap<>();
-            params.put("name", name);
-            params.put("sku", sku);
-            params.put("description", description);
-            params.put("quantity", String.valueOf(quantity));
-            params.put("total", String.valueOf(total));
-            params.put("manufacture_date", manufactureDate);
-            params.put("expiry_date", expiryDate);
-            params.put("category_id", String.valueOf(categoryId));
-            params.put("price", String.valueOf(price));
-
-            // Prepare file data
-            Map<String, File> files = new HashMap<>();
-            if (imageUri != null) {
-                try {
-                    File imageFile = createTempFileFromUri(imageUri);
-                    if (imageFile != null && imageFile.exists()) {
-                        files.put("image", imageFile);
-                        Log.d("ProductRepository", "Image file created: " + imageFile.getAbsolutePath());
-                    }
-                } catch (Exception e) {
-                    Log.e("ProductRepository", "Error creating file from URI: " + e.getMessage());
-                }
-            }
-
-            Log.d("ProductRepository", "Create product with image - params=" + params.toString());
-            Log.d("ProductRepository", "Create product with image - files=" + files.toString());
-
-            StringRequest request = ApiClient.multipartRequest(
-                    appContext,
-                    Request.Method.POST,
-                    "products",
-                    params,
-                    files,
-                    response -> {
-                        Log.d("ProductRepository", "Create product with image response=" + response);
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            Product product = Product.fromJson(jsonResponse);
-                            callback.onSuccess(product);
-                        } catch (JSONException e) {
-                            Log.e("ProductRepository", "Failed to parse product response: " + e.getMessage());
-                            Log.e("ProductRepository", "Raw response: " + response);
-                            callback.onError("Failed to parse product response: " + e.getMessage());
-                        }
-                    },
-                    error -> {
-                        Log.e("ProductRepository", "Create product with image failed", error);
-                        handleError(error, callback);
-                    }
-            );
-
-            ApiClient.enqueue(appContext, request);
-        } catch (Exception e) {
-            callback.onError("Error creating product with image: " + e.getMessage());
-        }
-    }
 
     public void getProducts(ProductListCallback callback) {
         JsonObjectRequest req = ApiClient.jsonRequest(
@@ -223,65 +157,6 @@ public class ProductRepository {
         }
     }
 
-    public void updateProductWithImage(String uuid, String name, String sku, String description, 
-                                      int quantity, int total, String manufactureDate, String expiryDate, 
-                                      int categoryId, double price, Uri imageUri, ProductCallback callback) {
-        try {
-            // Prepare form data
-            Map<String, String> params = new HashMap<>();
-            params.put("name", name);
-            params.put("sku", sku);
-            params.put("description", description);
-            params.put("quantity", String.valueOf(quantity));
-            params.put("total", String.valueOf(total));
-            params.put("manufacture_date", manufactureDate);
-            params.put("expiry_date", expiryDate);
-            params.put("category_id", String.valueOf(categoryId));
-            params.put("price", String.valueOf(price));
-            params.put("_method", "PUT"); // For Laravel to recognize as PUT request
-
-            // Prepare file data
-            Map<String, File> files = new HashMap<>();
-            if (imageUri != null) {
-                try {
-                    File imageFile = createTempFileFromUri(imageUri);
-                    if (imageFile != null && imageFile.exists()) {
-                        files.put("image", imageFile);
-                        Log.d("ProductRepository", "Image file created for update: " + imageFile.getAbsolutePath());
-                    }
-                } catch (Exception e) {
-                    Log.e("ProductRepository", "Error creating file from URI for update: " + e.getMessage());
-                }
-            }
-
-            Log.d("ProductRepository", "Update product with image - params=" + params.toString());
-
-            StringRequest request = ApiClient.multipartRequest(
-                    appContext,
-                    Request.Method.POST, // Use POST for multipart, Laravel will handle PUT via _method
-                    "products/" + uuid,
-                    params,
-                    files,
-                    response -> {
-                        Log.d("ProductRepository", "Update product with image response=" + response);
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            Product product = Product.fromJson(jsonResponse);
-                            callback.onSuccess(product);
-                        } catch (JSONException e) {
-                            callback.onError("Failed to parse product response: " + e.getMessage());
-                        }
-                    },
-                    error -> {
-                        handleError(error, callback);
-                    }
-            );
-
-            ApiClient.enqueue(appContext, request);
-        } catch (Exception e) {
-            callback.onError("Error updating product with image: " + e.getMessage());
-        }
-    }
 
     public void deleteProduct(String uuid, ProductCallback callback) {
         Log.d("ProductRepository", "Deleting product with UUID: " + uuid);
@@ -302,46 +177,20 @@ public class ProductRepository {
         ));
     }
 
-    private File createTempFileFromUri(Uri uri) {
-        try {
-            Log.d("ProductRepository", "Creating temp file from URI: " + uri.toString());
-            
-            // Create a temporary file
-            File tempFile = File.createTempFile("product_image", ".jpg", appContext.getCacheDir());
-            Log.d("ProductRepository", "Temp file created: " + tempFile.getAbsolutePath());
-            
-            // Copy the content from URI to the temporary file
-            InputStream inputStream = appContext.getContentResolver().openInputStream(uri);
-            if (inputStream != null) {
-                Log.d("ProductRepository", "Input stream opened successfully");
-                FileOutputStream outputStream = new FileOutputStream(tempFile);
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                int totalBytes = 0;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                    totalBytes += bytesRead;
-                }
-                inputStream.close();
-                outputStream.close();
-                
-                Log.d("ProductRepository", "File copied successfully, size: " + totalBytes + " bytes");
-                Log.d("ProductRepository", "Final file size: " + tempFile.length() + " bytes");
-                return tempFile;
-            } else {
-                Log.e("ProductRepository", "Failed to open input stream from URI");
-            }
-        } catch (Exception e) {
-            Log.e("ProductRepository", "Error creating temp file from URI: " + e.getMessage(), e);
-        }
-        return null;
-    }
 
     private void handleError(VolleyError error, ProductCallback callback) {
         String message = error.getMessage();
-        Log.e("ProductRepository", "VolleyError details: " + error.toString());
+        
+        // Enhanced error logging
+        Log.e("ProductRepository", "=== VOLLEY ERROR DETAILS ===");
+        Log.e("ProductRepository", "Error message: " + message);
+        Log.e("ProductRepository", "Error class: " + error.getClass().getSimpleName());
+        Log.e("ProductRepository", "Error toString: " + error.toString());
         
         if (error.networkResponse != null) {
+            Log.e("ProductRepository", "Network response status code: " + error.networkResponse.statusCode);
+            Log.e("ProductRepository", "Network response headers: " + error.networkResponse.headers.toString());
+            
             String body = null;
             try {
                 body = new String(error.networkResponse.data);
@@ -352,11 +201,14 @@ public class ProductRepository {
             message = "HTTP " + error.networkResponse.statusCode + (body != null ? (": " + body) : "");
         } else {
             Log.e("ProductRepository", "No network response - connection error");
+            Log.e("ProductRepository", "This usually indicates: Network connectivity issues, Server down, or DNS resolution problems");
             message = "Connection error: " + (message != null ? message : "Unable to connect to server");
         }
         
         if (message == null) message = "Unknown error";
-        Log.e("ProductRepository", "Product request failed: " + message, error);
+        Log.e("ProductRepository", "Final error message: " + message);
+        Log.e("ProductRepository", "=== END ERROR DETAILS ===");
+        
         callback.onError(message);
     }
 

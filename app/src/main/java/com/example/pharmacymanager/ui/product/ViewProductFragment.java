@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,6 @@ public class ViewProductFragment extends Fragment {
     private static final String ARG_PRODUCT_UUID = "product_uuid";
     private static final String ARG_PRODUCT_NAME = "product_name";
     private static final String ARG_PRODUCT_DESCRIPTION = "product_description";
-    private static final String ARG_PRODUCT_IMAGE = "product_image";
     private static final String ARG_PRODUCT_PRICE = "product_price";
     private static final String ARG_PRODUCT_QUANTITY = "product_quantity";
     private static final String ARG_PRODUCT_TOTAL = "product_total";
@@ -32,7 +30,6 @@ public class ViewProductFragment extends Fragment {
     private String productUuid;
     private String productName;
     private String productDescription;
-    private String productImage;
     private double productPrice;
     private int productQuantity;
     private int productTotal;
@@ -41,7 +38,6 @@ public class ViewProductFragment extends Fragment {
     private int productCategoryId;
 
     // Views
-    private ImageView productImageView;
     private TextView productNameText;
     private TextView productDescriptionText;
     private TextView productPriceText;
@@ -63,7 +59,6 @@ public class ViewProductFragment extends Fragment {
         args.putString(ARG_PRODUCT_UUID, product.getUuid());
         args.putString(ARG_PRODUCT_NAME, product.getName());
         args.putString(ARG_PRODUCT_DESCRIPTION, product.getDescription());
-        args.putString(ARG_PRODUCT_IMAGE, product.getImage());
         args.putDouble(ARG_PRODUCT_PRICE, product.getPrice());
         args.putInt(ARG_PRODUCT_QUANTITY, product.getQuantity());
         args.putInt(ARG_PRODUCT_TOTAL, product.getTotal());
@@ -81,7 +76,6 @@ public class ViewProductFragment extends Fragment {
             productUuid = getArguments().getString(ARG_PRODUCT_UUID);
             productName = getArguments().getString(ARG_PRODUCT_NAME);
             productDescription = getArguments().getString(ARG_PRODUCT_DESCRIPTION);
-            productImage = getArguments().getString(ARG_PRODUCT_IMAGE);
             productPrice = getArguments().getDouble(ARG_PRODUCT_PRICE);
             productQuantity = getArguments().getInt(ARG_PRODUCT_QUANTITY);
             productTotal = getArguments().getInt(ARG_PRODUCT_TOTAL);
@@ -106,7 +100,6 @@ public class ViewProductFragment extends Fragment {
     }
 
     private void initializeViews(View view) {
-        productImageView = view.findViewById(R.id.product_image);
         productNameText = view.findViewById(R.id.product_name);
         productDescriptionText = view.findViewById(R.id.product_description);
         productPriceText = view.findViewById(R.id.product_price);
@@ -123,19 +116,6 @@ public class ViewProductFragment extends Fragment {
         // Set product name
         productNameText.setText(productName);
 
-        // Set product image
-        if (productImage != null && !productImage.trim().isEmpty()) {
-            try {
-                // For now, we'll use a placeholder. In a real app, you'd load from URL or file path
-                productImageView.setImageResource(R.drawable.ic_image_placeholder);
-                android.util.Log.d("ViewProductFragment", "Product has image: " + productImage);
-            } catch (Exception e) {
-                android.util.Log.e("ViewProductFragment", "Error loading product image: " + e.getMessage());
-                productImageView.setImageResource(R.drawable.ic_image_placeholder);
-            }
-        } else {
-            productImageView.setImageResource(R.drawable.ic_image_placeholder);
-        }
 
         // Set product description
         if (productDescription != null && !productDescription.trim().isEmpty()) {
@@ -177,7 +157,7 @@ public class ViewProductFragment extends Fragment {
         btnEditProduct.setOnClickListener(v -> {
             // Create a Product object to pass to EditProductFragment
             Product product = new Product(
-                productUuid, productName, "", productDescription, productImage,
+                productUuid, productName, "", productDescription,
                 productQuantity, productTotal, productManufactureDate, productExpiryDate,
                 productCategoryId, productPrice, null, null
             );

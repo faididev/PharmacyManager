@@ -1,12 +1,9 @@
 package com.example.pharmacymanager.ui.product;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -90,7 +87,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     class ProductViewHolder extends RecyclerView.ViewHolder {
-        private ImageView productImage;
         private TextView productName;
         private TextView productSku;
         private TextView productDescription;
@@ -102,7 +98,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            productImage = itemView.findViewById(R.id.product_image);
             productName = itemView.findViewById(R.id.product_name);
             productSku = itemView.findViewById(R.id.product_sku);
             productDescription = itemView.findViewById(R.id.product_description);
@@ -161,19 +156,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             android.util.Log.d("ProductAdapter", "Binding product: " + product.getName());
             productName.setText(product.getName());
             
-            // Handle product image
-            if (product.getImage() != null && !product.getImage().trim().isEmpty()) {
-                try {
-                    // For now, we'll use a placeholder. In a real app, you'd load from URL or file path
-                    productImage.setImageResource(R.drawable.ic_image_placeholder);
-                    android.util.Log.d("ProductAdapter", "Product has image: " + product.getImage());
-                } catch (Exception e) {
-                    android.util.Log.e("ProductAdapter", "Error loading product image: " + e.getMessage());
-                    productImage.setImageResource(R.drawable.ic_image_placeholder);
-                }
-            } else {
-                productImage.setImageResource(R.drawable.ic_image_placeholder);
-            }
             
             // Handle SKU
             String sku = product.getSku();

@@ -8,7 +8,6 @@ public class Product {
     private String name;
     private String sku;
     private String description;
-    private String image;
     private int quantity;
     private int total;
     private String manufactureDate;
@@ -20,14 +19,13 @@ public class Product {
 
     public Product() {}
 
-    public Product(String uuid, String name, String sku, String description, String image, 
+    public Product(String uuid, String name, String sku, String description, 
                    int quantity, int total, String manufactureDate, String expiryDate, 
                    int categoryId, double price, String createdAt, String updatedAt) {
         this.uuid = uuid;
         this.name = name;
         this.sku = sku;
         this.description = description;
-        this.image = image;
         this.quantity = quantity;
         this.total = total;
         this.manufactureDate = manufactureDate;
@@ -62,7 +60,6 @@ public class Product {
             String name = attributes.getString("name");
             String sku = attributes.optString("sku", "");
             String description = attributes.optString("description", "");
-            String image = attributes.optString("image", null);
             int quantity = attributes.optInt("quantity", 0);
             int total = attributes.optInt("total", 0);
             String manufactureDate = attributes.optString("manufacture_date", "");
@@ -79,7 +76,6 @@ public class Product {
                 name,
                 sku,
                 description,
-                image,
                 quantity,
                 total,
                 manufactureDate,
@@ -143,13 +139,6 @@ public class Product {
         this.description = description;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public int getQuantity() {
         return quantity;
@@ -253,10 +242,10 @@ public class Product {
                     }
                 }
                 
-                return new Product(uuid, name, "", "", null, 0, 0, "", "", 0, 0.0, "", "");
+                return new Product(uuid, name, "", "", 0, 0, "", "", 0, 0.0, "", "");
             } catch (Exception ex) {
                 android.util.Log.e("Product", "All parsing methods failed", ex);
-                return new Product("", "Parse Error", "", "Failed to parse product", null, 0, 0, "", "", 0, 0.0, "", "");
+                return new Product("", "Parse Error", "", "Failed to parse product", 0, 0, "", "", 0, 0.0, "", "");
             }
         }
     }

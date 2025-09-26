@@ -1,9 +1,6 @@
 package com.example.pharmacymanager.ui.product;
 
 import android.app.DatePickerDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,21 +9,13 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.google.android.material.textfield.TextInputEditText;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
-
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -51,31 +40,17 @@ public class AddProductFragment extends Fragment {
                           quantityInput, totalInput, manufactureDateInputLayout, 
                           expiryDateInputLayout, categoryInput;
     private AutoCompleteTextView categoryDropdown;
-    private Button createButton, selectImageButton;
-    private ImageView productImagePreview;
-    private TextView imageStatusText;
+    private Button createButton;
     private TextInputEditText manufactureDateInput, expiryDateInput;
     private ScrollView scrollView;
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
     private List<Category> categories = new ArrayList<>();
     private int selectedCategoryId = 0;
-    private Uri selectedImageUri = null;
     private Calendar manufactureCalendar = Calendar.getInstance();
     private Calendar expiryCalendar = Calendar.getInstance();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-    // Image picker launcher
-    private ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    selectedImageUri = uri;
-                    loadImageFromUri(uri);
-                    imageStatusText.setText("Image selected");
-                }
-            }
-    );
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,8 +81,8 @@ public class AddProductFragment extends Fragment {
         // Set up focus listeners for auto-scrolling
         setupFocusListeners();
 
-        // Set up image picker and date picker listeners
-        setupImageAndDateListeners();
+        // Set up date picker listeners
+        setupDateListeners();
 
         return view;
     }
@@ -178,12 +153,7 @@ public class AddProductFragment extends Fragment {
         }
     }
 
-    private void setupImageAndDateListeners() {
-        // Image picker button
-        selectImageButton.setOnClickListener(v -> {
-            imagePickerLauncher.launch("image/*");
-        });
-
+    private void setupDateListeners() {
         // Date picker listeners
         manufactureDateInput.setOnClickListener(v -> showDatePicker(manufactureCalendar, manufactureDateInput));
         expiryDateInput.setOnClickListener(v -> showDatePicker(expiryCalendar, expiryDateInput));
@@ -203,16 +173,6 @@ public class AddProductFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void loadImageFromUri(Uri uri) {
-        try {
-            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            productImagePreview.setImageBitmap(bitmap);
-            productImagePreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } catch (Exception e) {
-            Toast.makeText(requireContext(), "Error loading image", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void initializeViews(View view) {
         nameInput = view.findViewById(R.id.product_name);
@@ -226,11 +186,6 @@ public class AddProductFragment extends Fragment {
         categoryDropdown = view.findViewById(R.id.category_dropdown);
         createButton = view.findViewById(R.id.create_product_btn);
         scrollView = view.findViewById(R.id.scrollView);
-        
-        // Image related views
-        productImagePreview = view.findViewById(R.id.product_image_preview);
-        selectImageButton = view.findViewById(R.id.btn_select_image);
-        imageStatusText = view.findViewById(R.id.image_status_text);
         
         // Date input fields
         manufactureDateInput = view.findViewById(R.id.manufacture_date_input);
@@ -324,94 +279,67 @@ public class AddProductFragment extends Fragment {
 
         android.util.Log.d("AddProductFragment", "Creating product: " + name + ", Category ID: " + selectedCategoryId);
         
-        // Use the appropriate request type based on whether image is selected
-        if (selectedImageUri != null) {
-            android.util.Log.d("AddProductFragment", "Creating product with image using multipart request");
-            productRepository.createProductWithImage(name, "", description, quantity, total, 
-                    manufactureDate, expiryDate, selectedCategoryId, price, selectedImageUri,
-                    new ProductRepository.ProductCallback() {
-                @Override
-                public void onSuccess(Product product) {
-                    android.util.Log.d("AddProductFragment", "Product created successfully with image: " + product.getName());
-                    createButton.setEnabled(true);
-                    createButton.setText("Create Product");
-                    
-                    Toast.makeText(requireContext(), "Product created successfully with image!", Toast.LENGTH_SHORT).show();
-                    
-                    // Clear form
-                    clearForm();
-                    
-                    // Navigate back and refresh the list
-                    if (getActivity() != null) {
-                        getActivity().onBackPressed();
-                        // Refresh the product list
-                        ListProductFragment listFragment = (ListProductFragment) getActivity()
-                                .getSupportFragmentManager()
-                                .findFragmentById(R.id.fragement_container);
-                        if (listFragment != null) {
-                            listFragment.refreshProducts();
-                        }
+        productRepository.createProduct(name, "", description, quantity, total, 
+                manufactureDate, expiryDate, selectedCategoryId, price,
+                new ProductRepository.ProductCallback() {
+            @Override
+            public void onSuccess(Product product) {
+                android.util.Log.d("AddProductFragment", "Product created successfully: " + product.getName());
+                createButton.setEnabled(true);
+                createButton.setText("Create Product");
+                
+                Toast.makeText(requireContext(), "Product created successfully!", Toast.LENGTH_SHORT).show();
+                
+                // Clear form
+                clearForm();
+                
+                // Navigate back and refresh the list
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                    // Refresh the product list
+                    ListProductFragment listFragment = (ListProductFragment) getActivity()
+                            .getSupportFragmentManager()
+                            .findFragmentById(R.id.fragement_container);
+                    if (listFragment != null) {
+                        listFragment.refreshProducts();
                     }
                 }
+            }
 
-                @Override
-                public void onError(String message) {
-                    android.util.Log.e("AddProductFragment", "Multipart request failed: " + message);
-                    createButton.setEnabled(true);
-                    createButton.setText("Create Product");
-                    
-                    // Check if it's an authentication error
-                    if (message.contains("401") || message.contains("Unauthorized") || message.contains("Token")) {
-                        Toast.makeText(requireContext(), "Authentication error. Please login again.", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(requireContext(), "Error creating product with image: " + message, Toast.LENGTH_LONG).show();
-                    }
+            @Override
+            public void onError(String message) {
+                // Enhanced error logging
+                android.util.Log.e("AddProductFragment", "=== PRODUCT CREATION ERROR ===");
+                android.util.Log.e("AddProductFragment", "Error message: " + message);
+                android.util.Log.e("AddProductFragment", "Product name: " + name);
+                android.util.Log.e("AddProductFragment", "Product description: " + description);
+                android.util.Log.e("AddProductFragment", "Product price: " + price);
+                android.util.Log.e("AddProductFragment", "Product quantity: " + quantity);
+                android.util.Log.e("AddProductFragment", "Product total: " + total);
+                android.util.Log.e("AddProductFragment", "Manufacture date: " + manufactureDate);
+                android.util.Log.e("AddProductFragment", "Expiry date: " + expiryDate);
+                android.util.Log.e("AddProductFragment", "Category ID: " + selectedCategoryId);
+                android.util.Log.e("AddProductFragment", "=== END ERROR DETAILS ===");
+                
+                createButton.setEnabled(true);
+                createButton.setText("Create Product");
+                
+                // Check if it's an authentication error
+                if (message.contains("401") || message.contains("Unauthorized") || message.contains("Token")) {
+                    android.util.Log.e("AddProductFragment", "Authentication error detected");
+                    Toast.makeText(requireContext(), "Authentication error. Please login again.", Toast.LENGTH_LONG).show();
+                } else if (message.contains("422") || message.contains("Unprocessable Entity")) {
+                    android.util.Log.e("AddProductFragment", "Validation error detected");
+                    Toast.makeText(requireContext(), "Validation error. Please check your input data.", Toast.LENGTH_LONG).show();
+                } else if (message.contains("500") || message.contains("Internal Server Error")) {
+                    android.util.Log.e("AddProductFragment", "Server error detected");
+                    Toast.makeText(requireContext(), "Server error occurred. Please try again later.", Toast.LENGTH_LONG).show();
+                } else {
+                    android.util.Log.e("AddProductFragment", "General error detected");
+                    Toast.makeText(requireContext(), "Error: " + message, Toast.LENGTH_LONG).show();
                 }
-            });
-        } else {
-            android.util.Log.d("AddProductFragment", "Creating product without image using JSON request");
-            productRepository.createProduct(name, "", description, quantity, total, 
-                    manufactureDate, expiryDate, selectedCategoryId, price,
-                    new ProductRepository.ProductCallback() {
-                @Override
-                public void onSuccess(Product product) {
-                    android.util.Log.d("AddProductFragment", "Product created successfully without image: " + product.getName());
-                    createButton.setEnabled(true);
-                    createButton.setText("Create Product");
-                    
-                    Toast.makeText(requireContext(), "Product created successfully!", Toast.LENGTH_SHORT).show();
-                    
-                    // Clear form
-                    clearForm();
-                    
-                    // Navigate back and refresh the list
-                    if (getActivity() != null) {
-                        getActivity().onBackPressed();
-                        // Refresh the product list
-                        ListProductFragment listFragment = (ListProductFragment) getActivity()
-                                .getSupportFragmentManager()
-                                .findFragmentById(R.id.fragement_container);
-                        if (listFragment != null) {
-                            listFragment.refreshProducts();
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(String message) {
-                    android.util.Log.e("AddProductFragment", "JSON request failed: " + message);
-                    createButton.setEnabled(true);
-                    createButton.setText("Create Product");
-                    
-                    // Check if it's an authentication error
-                    if (message.contains("401") || message.contains("Unauthorized") || message.contains("Token")) {
-                        Toast.makeText(requireContext(), "Authentication error. Please login again.", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(requireContext(), "Error: " + message, Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        }
+            }
+        });
     }
 
     private void clearForm() {
@@ -424,10 +352,6 @@ public class AddProductFragment extends Fragment {
         expiryDateInput.setText("");
         categoryDropdown.setText("");
         selectedCategoryId = 0;
-        selectedImageUri = null;
-        productImagePreview.setImageResource(android.R.color.transparent);
-        productImagePreview.setBackgroundResource(R.drawable.ic_image_placeholder);
-        imageStatusText.setText("No image selected");
     }
 
     private boolean validateInputs() {

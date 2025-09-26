@@ -1,9 +1,6 @@
 package com.example.pharmacymanager.ui.product;
 
 import android.app.DatePickerDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +9,14 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -47,7 +40,6 @@ public class EditProductFragment extends Fragment {
     private static final String ARG_PRODUCT_UUID = "product_uuid";
     private static final String ARG_PRODUCT_NAME = "product_name";
     private static final String ARG_PRODUCT_DESCRIPTION = "product_description";
-    private static final String ARG_PRODUCT_IMAGE = "product_image";
     private static final String ARG_PRODUCT_PRICE = "product_price";
     private static final String ARG_PRODUCT_QUANTITY = "product_quantity";
     private static final String ARG_PRODUCT_TOTAL = "product_total";
@@ -58,7 +50,6 @@ public class EditProductFragment extends Fragment {
     private String productUuid;
     private String productName;
     private String productDescription;
-    private String productImage;
     private double productPrice;
     private int productQuantity;
     private int productTotal;
@@ -70,31 +61,17 @@ public class EditProductFragment extends Fragment {
                           quantityInput, totalInput, manufactureDateInputLayout, 
                           expiryDateInputLayout, categoryInput;
     private AutoCompleteTextView categoryDropdown;
-    private Button updateButton, deleteButton, selectImageButton;
-    private ImageView productImagePreview;
-    private TextView imageStatusText;
+    private Button updateButton, deleteButton;
     private TextInputEditText manufactureDateInput, expiryDateInput;
     private ScrollView scrollView;
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
     private List<Category> categories = new ArrayList<>();
     private int selectedCategoryId = 0;
-    private Uri selectedImageUri = null;
     private Calendar manufactureCalendar = Calendar.getInstance();
     private Calendar expiryCalendar = Calendar.getInstance();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-    // Image picker launcher
-    private ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    selectedImageUri = uri;
-                    loadImageFromUri(uri);
-                    imageStatusText.setText("Image selected");
-                }
-            }
-    );
 
     public EditProductFragment() {
         // Required empty public constructor
@@ -106,7 +83,6 @@ public class EditProductFragment extends Fragment {
         args.putString(ARG_PRODUCT_UUID, product.getUuid());
         args.putString(ARG_PRODUCT_NAME, product.getName());
         args.putString(ARG_PRODUCT_DESCRIPTION, product.getDescription());
-        args.putString(ARG_PRODUCT_IMAGE, product.getImage());
         args.putDouble(ARG_PRODUCT_PRICE, product.getPrice());
         args.putInt(ARG_PRODUCT_QUANTITY, product.getQuantity());
         args.putInt(ARG_PRODUCT_TOTAL, product.getTotal());
@@ -124,7 +100,6 @@ public class EditProductFragment extends Fragment {
             productUuid = getArguments().getString(ARG_PRODUCT_UUID);
             productName = getArguments().getString(ARG_PRODUCT_NAME);
             productDescription = getArguments().getString(ARG_PRODUCT_DESCRIPTION);
-            productImage = getArguments().getString(ARG_PRODUCT_IMAGE);
             productPrice = getArguments().getDouble(ARG_PRODUCT_PRICE);
             productQuantity = getArguments().getInt(ARG_PRODUCT_QUANTITY);
             productTotal = getArguments().getInt(ARG_PRODUCT_TOTAL);
@@ -167,8 +142,8 @@ public class EditProductFragment extends Fragment {
         // Set up focus listeners for auto-scrolling
         setupFocusListeners();
 
-        // Set up image picker and date picker listeners
-        setupImageAndDateListeners();
+        // Set up date picker listeners
+        setupDateListeners();
 
         return view;
     }
@@ -239,12 +214,7 @@ public class EditProductFragment extends Fragment {
         }
     }
 
-    private void setupImageAndDateListeners() {
-        // Image picker button
-        selectImageButton.setOnClickListener(v -> {
-            imagePickerLauncher.launch("image/*");
-        });
-
+    private void setupDateListeners() {
         // Date picker listeners
         manufactureDateInput.setOnClickListener(v -> showDatePicker(manufactureCalendar, manufactureDateInput));
         expiryDateInput.setOnClickListener(v -> showDatePicker(expiryCalendar, expiryDateInput));
@@ -264,16 +234,6 @@ public class EditProductFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void loadImageFromUri(Uri uri) {
-        try {
-            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            productImagePreview.setImageBitmap(bitmap);
-            productImagePreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } catch (Exception e) {
-            Toast.makeText(requireContext(), "Error loading image", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void initializeViews(View view) {
         nameInput = view.findViewById(R.id.product_name);
@@ -289,10 +249,6 @@ public class EditProductFragment extends Fragment {
         deleteButton = view.findViewById(R.id.delete_product_btn);
         scrollView = view.findViewById(R.id.scrollView);
         
-        // Image related views
-        productImagePreview = view.findViewById(R.id.product_image_preview);
-        selectImageButton = view.findViewById(R.id.btn_select_image);
-        imageStatusText = view.findViewById(R.id.image_status_text);
         
         // Date input fields
         manufactureDateInput = view.findViewById(R.id.manufacture_date_input);
@@ -316,14 +272,6 @@ public class EditProductFragment extends Fragment {
             expiryDateInput.setText(productExpiryDate);
         }
         selectedCategoryId = productCategoryId;
-        
-        // Set image status
-        if (productImage != null && !productImage.isEmpty()) {
-            imageStatusText.setText("Image loaded");
-            // TODO: Load image from URL if needed
-        } else {
-            imageStatusText.setText("No image");
-        }
     }
 
     private void loadCategories() {
@@ -468,7 +416,7 @@ public class EditProductFragment extends Fragment {
                                         .findFragmentById(R.id.fragement_container);
                                 if (listFragment != null) {
                                     listFragment.deleteProduct(new Product(productUuid, productName, "", 
-                                            productDescription, null, productQuantity, productTotal, 
+                                            productDescription, productQuantity, productTotal, 
                                             productManufactureDate, productExpiryDate, productCategoryId, 
                                             productPrice, null, null));
                                 }
