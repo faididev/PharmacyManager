@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
+import android.widget.Toast;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.pharmacymanager.ui.MainActivity;
 import com.example.pharmacymanager.R;
 import com.google.android.material.textfield.TextInputLayout;
+import com.example.pharmacymanager.data.repositories.AuthRepository;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
@@ -72,29 +75,46 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void loginUser(View view){
-        if(!validateLoginUsernameOrEmail() | !validatePassword()){
+        if(!validateEmailOnly() | !validatePassword()){
             return;
         }
 
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+        assert username.getEditText() != null;
+        assert password.getEditText() != null;
+        String emailVal = username.getEditText().getText().toString().trim();
+        String pass = password.getEditText().getText().toString().trim();
 
+        login_btn.setEnabled(false);
+
+        new AuthRepository(this).login(emailVal, pass, new AuthRepository.AuthCallback() {
+            @Override
+            public void onSuccess() {
+                login_btn.setEnabled(true);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onError(String message) {
+                login_btn.setEnabled(true);
+                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private boolean validateLoginUsernameOrEmail() {
+    private boolean validateEmailOnly(){
         assert username.getEditText() != null;
         String val = username.getEditText().getText().toString().trim();
-
-        String usernamePattern = "^[A-Za-z0-9._]{4,15}$";
 
         String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
         if (val.isEmpty()) {
-            username.setError("Field cannot be empty");
+            username.setError("Email cannot be empty");
             return false;
         }
-        else if (!val.matches(usernamePattern) && !val.matches(emailRegex)) {
-            username.setError("Enter a valid username or email");
+        else if (!val.matches(emailRegex)) {
+            username.setError("Enter a valid email");
             return false;
         }
         else {

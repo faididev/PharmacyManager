@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -72,6 +73,32 @@ public class SignupActivity extends AppCompatActivity {
         if(!validateUsername() | !validateEmail() | !validatePassword() | !validateConfirmPassword()){
             return;
         }
+        assert username.getEditText() != null;
+        assert email.getEditText() != null;
+        assert password.getEditText() != null;
+
+        String name = username.getEditText().getText().toString().trim();
+        String emailVal = email.getEditText().getText().toString().trim();
+        String pass = password.getEditText().getText().toString().trim();
+
+        login_btn.setEnabled(false);
+        new com.example.pharmacymanager.data.repositories.AuthRepository(this)
+                .register(name, emailVal, pass, new com.example.pharmacymanager.data.repositories.AuthRepository.AuthCallback() {
+                    @Override
+                    public void onSuccess() {
+                        login_btn.setEnabled(true);
+                        Toast.makeText(SignupActivity.this, "Registered successfully. Please log in.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        login_btn.setEnabled(true);
+                        Toast.makeText(SignupActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     private boolean validateUsername(){
         assert username.getEditText() != null;

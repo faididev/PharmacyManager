@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.pharmacymanager.R;
+import com.example.pharmacymanager.ui.category.AddCategoryFragment;
 import com.example.pharmacymanager.ui.category.ListCategoryFragment;
 import com.example.pharmacymanager.ui.home.HomeFragment;
 import com.example.pharmacymanager.ui.product.ListProductFragment;
@@ -93,6 +94,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // Method to navigate to AddCategoryFragment (can be called from other fragments)
+    public void navigateToAddCategory() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragement_container, new AddCategoryFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     /*@Override

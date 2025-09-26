@@ -4,71 +4,123 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pharmacymanager.R;
-import com.google.android.material.button.MaterialButton;
+import com.example.pharmacymanager.data.entities.Category;
+import com.example.pharmacymanager.data.repositories.CategoryRepository;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class AddCategoryFragment extends Fragment {
 
-    private MaterialButton addNew;
-    private MaterialButton btnBack;
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
-    public AddCategoryFragment() {
-        // Required empty public constructor
-    }
-
-    public static AddCategoryFragment newInstance(String param1, String param2) {
-        AddCategoryFragment fragment = new AddCategoryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private TextInputLayout nameInput, descriptionInput;
+    private Button createButton;
+    private CategoryRepository categoryRepository;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-
-        // Inflate the fragment layout
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_category, container, false);
 
-        // Locate buttons inside the fragment
-        addNew = view.findViewById(R.id.btnAdd);
-        btnBack = view.findViewById(R.id.btnBack);
+        // Initialize views
+        nameInput = view.findViewById(R.id.category_name);
+        descriptionInput = view.findViewById(R.id.category_description);
+        createButton = view.findViewById(R.id.create_category_btn);
 
-        // Example: add click listeners
-        addNew.setOnClickListener(v -> {
-            // Handle Add button click
-        });
+        // Initialize repository
+        categoryRepository = new CategoryRepository(requireContext());
 
-        btnBack.setOnClickListener(v -> {
-            // Handle Back button click
-            requireActivity().getSupportFragmentManager().popBackStack();
+        // Set up button click listeners
+        createButton.setOnClickListener(v -> createCategory());
+        
+        // Set up back button
+        Button backButton = view.findViewById(R.id.btnBack);
+        backButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
         });
 
         return view;
+    }
+
+    private void createCategory() {
+        if (!validateInputs()) {
+            return;
+        }
+
+        String name = nameInput.getEditText().getText().toString().trim();
+        String description = descriptionInput.getEditText().getText().toString().trim();
+
+        createButton.setEnabled(false);
+        createButton.setText("Creating...");
+
+        categoryRepository.createCategory(name, description, new CategoryRepository.CategoryCallback() {
+            @Override
+            public void onSuccess(Category category) {
+                createButton.setEnabled(true);
+                createButton.setText("Create Category");
+                
+                Toast.makeText(requireContext(), "Category created successfully!", Toast.LENGTH_SHORT).show();
+                
+                // Clear form
+                nameInput.getEditText().setText("");
+                descriptionInput.getEditText().setText("");
+                
+                // Navigate back and refresh the list
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                    // Refresh the category list
+                    ListCategoryFragment listFragment = (ListCategoryFragment) getActivity()
+                            .getSupportFragmentManager()
+                            .findFragmentById(R.id.fragement_container);
+                    if (listFragment != null) {
+                        listFragment.refreshCategories();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                createButton.setEnabled(true);
+                createButton.setText("Create Category");
+                Toast.makeText(requireContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private boolean validateInputs() {
+        boolean isValid = true;
+
+        // Validate name
+        String name = nameInput.getEditText().getText().toString().trim();
+        if (name.isEmpty()) {
+            nameInput.setError("Category name is required");
+            isValid = false;
+        } else if (name.length() < 2) {
+            nameInput.setError("Category name must be at least 2 characters");
+            isValid = false;
+        } else {
+            nameInput.setError(null);
+            nameInput.setErrorEnabled(false);
+        }
+
+        // Validate description
+        String description = descriptionInput.getEditText().getText().toString().trim();
+        if (description.isEmpty()) {
+            descriptionInput.setError("Description is required");
+            isValid = false;
+        } else if (description.length() < 5) {
+            descriptionInput.setError("Description must be at least 5 characters");
+            isValid = false;
+        } else {
+            descriptionInput.setError(null);
+            descriptionInput.setErrorEnabled(false);
+        }
+
+        return isValid;
     }
 }

@@ -62,6 +62,9 @@ dependencies {
 
     // Material Design Components New Version
     implementation(libs.material.v1110)
+    
+    // SwipeRefreshLayout
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // Unit Testing
     testImplementation(libs.junit)

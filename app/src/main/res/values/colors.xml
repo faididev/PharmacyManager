@@ -35,11 +35,19 @@
     <color name="success">#66BB6A</color>
     <color name="info">#42A5F5</color>
     <color name="warning">#FFA726</color>
-    <color name="MainColor">#4CAF50</color>
-    <color name="MainBackColor">#F9F9F9</color>
+    <color name="MainColor">#4F46E5</color>
+    <color name="MainBackColor">#F8FAFC</color>
     <color name="transpirant">#00000000</color>
     <color name="darker_main_color">#43A047</color>
-    <color name="main_text_color">#212121</color>
-    <color name="secondary_text_color">#757575</color>
+    <color name="main_text_color">#0F172A</color>
+    <color name="secondary_text_color">#475569</color>
+    
+    <!-- Input field colors for better visibility -->
+    <color name="input_background">#FFFFFF</color>
+    <color name="input_border">#D1D5DB</color>
+    <color name="input_focused_border">#4F46E5</color>
+    <color name="input_text">#1F2937</color>
+    <color name="input_hint">#6B7280</color>
+    <color name="icon_tint">#4F46E5</color>
 
 </resources>
