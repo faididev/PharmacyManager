@@ -3,6 +3,7 @@ package com.example.pharmacymanager.ui.category;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public interface OnCategoryClickListener {
         void onCategoryClick(Category category);
         void onCategoryLongClick(Category category);
+        void onCategoryDeleteClick(Category category);
     }
 
     public CategoryAdapter() {
@@ -30,6 +32,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     public void setCategories(List<Category> categories) {
         this.categories = categories != null ? categories : new ArrayList<>();
+        android.util.Log.d("CategoryAdapter", "Setting " + this.categories.size() + " categories to adapter");
         notifyDataSetChanged();
     }
 
@@ -43,6 +46,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             if (categories.get(i).getId() == category.getId()) {
                 categories.set(i, category);
                 notifyItemChanged(i);
+                android.util.Log.d("CategoryAdapter", "Updated category: " + category.getName());
                 break;
             }
         }
@@ -78,6 +82,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
+        android.util.Log.d("CategoryAdapter", "getItemCount() called, returning: " + categories.size());
         return categories.size();
     }
 
@@ -85,14 +90,37 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         private TextView categoryName;
         private TextView categoryDescription;
         private TextView categoryDate;
+        private ImageButton btnEdit;
+        private ImageButton btnDelete;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryName = itemView.findViewById(R.id.category_name);
             categoryDescription = itemView.findViewById(R.id.category_description);
             categoryDate = itemView.findViewById(R.id.category_date);
+            btnEdit = itemView.findViewById(R.id.btn_edit);
+            btnDelete = itemView.findViewById(R.id.btn_delete);
 
-            // Set click listeners
+            // Set click listeners for action buttons
+            btnEdit.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onCategoryLongClick(categories.get(position)); // Use edit functionality
+                    }
+                }
+            });
+
+            btnDelete.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onCategoryDeleteClick(categories.get(position));
+                    }
+                }
+            });
+
+            // Set click listeners for item
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     int position = getAdapterPosition();
@@ -106,6 +134,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
+                        // Provide visual feedback
+                        v.setAlpha(0.7f);
+                        v.postDelayed(() -> v.setAlpha(1.0f), 150);
+                        
                         listener.onCategoryLongClick(categories.get(position));
                         return true;
                     }
@@ -115,8 +147,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
         public void bind(Category category) {
+            android.util.Log.d("CategoryAdapter", "Binding category: " + category.getName());
             categoryName.setText(category.getName());
-            categoryDescription.setText(category.getDescription());
+            
+            // Handle null or empty descriptions
+            String description = category.getDescription();
+            if (description == null || description.trim().isEmpty()) {
+                categoryDescription.setText("No description available");
+            } else {
+                categoryDescription.setText(description);
+            }
             
             // Format date (remove time part)
             if (category.getCreatedAt() != null) {
@@ -128,5 +168,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
     }
 }
+
 
 

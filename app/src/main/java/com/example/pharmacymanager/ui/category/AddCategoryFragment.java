@@ -52,15 +52,24 @@ public class AddCategoryFragment extends Fragment {
             return;
         }
 
+        // Check if user is still authenticated
+        String token = new com.example.pharmacymanager.data.local.SessionManager(requireContext()).getToken();
+        if (token == null || token.isEmpty()) {
+            Toast.makeText(requireContext(), "Session expired. Please login again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String name = nameInput.getEditText().getText().toString().trim();
         String description = descriptionInput.getEditText().getText().toString().trim();
 
         createButton.setEnabled(false);
         createButton.setText("Creating...");
 
+        android.util.Log.d("AddCategoryFragment", "Creating category: " + name + ", Token present: " + (token != null));
         categoryRepository.createCategory(name, description, new CategoryRepository.CategoryCallback() {
             @Override
             public void onSuccess(Category category) {
+                android.util.Log.d("AddCategoryFragment", "Category created successfully: " + category.getName());
                 createButton.setEnabled(true);
                 createButton.setText("Create Category");
                 
@@ -85,9 +94,17 @@ public class AddCategoryFragment extends Fragment {
 
             @Override
             public void onError(String message) {
+                android.util.Log.e("AddCategoryFragment", "Error creating category: " + message);
                 createButton.setEnabled(true);
                 createButton.setText("Create Category");
-                Toast.makeText(requireContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+                
+                // Check if it's an authentication error
+                if (message.contains("401") || message.contains("Unauthorized") || message.contains("Token")) {
+                    Toast.makeText(requireContext(), "Authentication error. Please login again.", Toast.LENGTH_LONG).show();
+                    // Don't redirect automatically, let user handle it
+                } else {
+                    Toast.makeText(requireContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

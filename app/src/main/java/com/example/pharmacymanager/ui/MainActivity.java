@@ -1,6 +1,7 @@
 package com.example.pharmacymanager.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -21,7 +22,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.pharmacymanager.R;
 import com.example.pharmacymanager.ui.category.AddCategoryFragment;
 import com.example.pharmacymanager.ui.category.ListCategoryFragment;
+import com.example.pharmacymanager.ui.customer.AddCustomerFragment;
+import com.example.pharmacymanager.ui.customer.ListCustomerFragment;
 import com.example.pharmacymanager.ui.home.HomeFragment;
+import com.example.pharmacymanager.ui.order.AddOrderFragment;
+import com.example.pharmacymanager.ui.order.ListOrderFragment;
+import com.example.pharmacymanager.ui.product.AddProductFragment;
 import com.example.pharmacymanager.ui.product.ListProductFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("MainActivity", "onCreate called");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
 
@@ -73,6 +80,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("MainActivity", "onDestroy called");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("MainActivity", "onRestart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MainActivity", "onResume called");
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
 
@@ -85,6 +110,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else if (id == R.id.nav_product) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new ListProductFragment()).commit();
+        } else if (id == R.id.nav_customer) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragement_container, new ListCustomerFragment()).commit();
+        } else if (id == R.id.nav_order) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragement_container, new ListOrderFragment()).commit();
         } else if (id == R.id.nav_about) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new HomeFragment()).commit();
@@ -100,6 +131,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void navigateToAddCategory() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragement_container, new AddCategoryFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // Method to navigate to AddProductFragment (can be called from other fragments)
+    public void navigateToAddProduct() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragement_container, new AddProductFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // Method to navigate to AddCustomerFragment (can be called from other fragments)
+    public void navigateToAddCustomer() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragement_container, new AddCustomerFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // Method to navigate to AddOrderFragment (can be called from other fragments)
+    public void navigateToAddOrder() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragement_container, AddOrderFragment.newInstance())
                 .addToBackStack(null)
                 .commit();
     }

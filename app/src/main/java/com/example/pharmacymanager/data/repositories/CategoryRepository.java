@@ -111,17 +111,19 @@ public class CategoryRepository {
     }
 
     public void deleteCategory(int categoryId, CategoryCallback callback) {
-        ApiClient.enqueue(appContext, ApiClient.jsonRequest(
+        Log.d("CategoryRepository", "Deleting category with ID: " + categoryId);
+        ApiClient.enqueue(appContext, ApiClient.stringRequest(
                 appContext,
                 Request.Method.DELETE,
                 "categories/" + categoryId,
                 null,
                 response -> {
-                    Log.d("CategoryRepository", "Delete category response=" + response.toString());
-                    // For delete, we don't need to parse the response
+                    Log.d("CategoryRepository", "Delete category successful, response=" + response);
+                    // For delete, we don't need to parse the response (204 No Content)
                     callback.onSuccess(null);
                 },
                 error -> {
+                    Log.e("CategoryRepository", "Delete category failed", error);
                     handleError(error, callback);
                 }
         ));

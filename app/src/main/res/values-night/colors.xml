@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme colors for pharmacy app -->
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryDark">#2E7D32</color>
+    <color name="colorAccent">#66BB6A</color>
+
+    <color name="primary">#4CAF50</color>
+    <color name="primary_variant">#388E3C</color>
+    <color name="on_primary">#000000</color>
+
+    <color name="secondary">#29B6F6</color>
+    <color name="secondary_variant">#0288D1</color>
+    <color name="on_secondary">#000000</color>
+
+    <color name="tertiary">#A1887F</color>
+    <color name="on_tertiary">#000000</color>
+
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="on_background">#E0E0E0</color>
+    <color name="on_surface">#E0E0E0</color>
+
+    <color name="error">#F44336</color>
+    <color name="on_error">#FFFFFF</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray_light">#424242</color>
+    <color name="gray_medium">#616161</color>
+    <color name="gray_dark">#9E9E9E</color>
+
+    <color name="deleteColor">#F44336</color>
+    <color name="on_delete">#FFFFFF</color>
+
+    <color name="success">#4CAF50</color>
+    <color name="info">#2196F3</color>
+    <color name="warning">#FF9800</color>
+    <color name="MainColor">#4CAF50</color>
+    <color name="MainBackColor">#1E1E1E</color>
+    <color name="transpirant">#00000000</color>
+    <color name="darker_main_color">#2E7D32</color>
+    <color name="main_text_color">#E0E0E0</color>
+    <color name="secondary_text_color">#B0B0B0</color>
+    
+    <!-- Input field colors for dark theme -->
+    <color name="input_background">#2E2E2E</color>
+    <color name="input_border">#424242</color>
+    <color name="input_focused_border">#4CAF50</color>
+    <color name="input_text">#E0E0E0</color>
+    <color name="input_hint">#9E9E9E</color>
+    <color name="icon_tint">#4CAF50</color>
+    
+    <!-- Order status colors -->
+    <color name="status_pending">#FF9800</color>
+    <color name="status_processing">#2196F3</color>
+    <color name="status_completed">#4CAF50</color>
+    <color name="status_cancelled">#F44336</color>
+
+</resources>

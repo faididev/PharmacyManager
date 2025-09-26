@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#969EEE</color>
-    <color name="colorPrimaryDark">#555C96</color>
-    <color name="colorAccent">#969EEE</color>
+    <color name="colorPrimary">#2E7D32</color>
+    <color name="colorPrimaryDark">#1B5E20</color>
+    <color name="colorAccent">#4CAF50</color>
 
     <color name="primary">#43A047</color> <!-- Modern Green -->
     <color name="primary_variant">#2E7D32</color>
@@ -35,19 +35,25 @@
     <color name="success">#66BB6A</color>
     <color name="info">#42A5F5</color>
     <color name="warning">#FFA726</color>
-    <color name="MainColor">#4F46E5</color>
-    <color name="MainBackColor">#F8FAFC</color>
+    <color name="MainColor">#2E7D32</color>
+    <color name="MainBackColor">#F1F8E9</color>
     <color name="transpirant">#00000000</color>
-    <color name="darker_main_color">#43A047</color>
-    <color name="main_text_color">#0F172A</color>
-    <color name="secondary_text_color">#475569</color>
+    <color name="darker_main_color">#1B5E20</color>
+    <color name="main_text_color">#1B5E20</color>
+    <color name="secondary_text_color">#388E3C</color>
     
     <!-- Input field colors for better visibility -->
     <color name="input_background">#FFFFFF</color>
-    <color name="input_border">#D1D5DB</color>
-    <color name="input_focused_border">#4F46E5</color>
-    <color name="input_text">#1F2937</color>
-    <color name="input_hint">#6B7280</color>
-    <color name="icon_tint">#4F46E5</color>
+    <color name="input_border">#C8E6C9</color>
+    <color name="input_focused_border">#2E7D32</color>
+    <color name="input_text">#1B5E20</color>
+    <color name="input_hint">#66BB6A</color>
+    <color name="icon_tint">#2E7D32</color>
+    
+    <!-- Order status colors -->
+    <color name="status_pending">#FFA726</color>
+    <color name="status_processing">#42A5F5</color>
+    <color name="status_completed">#66BB6A</color>
+    <color name="status_cancelled">#EF5350</color>
 
 </resources>

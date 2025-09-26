@@ -85,6 +85,9 @@ public class AuthRepository {
     private void handleAuthResponse(JSONObject response, AuthCallback callback) {
         try {
             String token = null;
+            int userId = -1;
+            
+            // Extract token
             if (response.has("token")) {
                 token = response.getString("token");
             } else if (response.has("access_token")) {
@@ -95,8 +98,37 @@ public class AuthRepository {
                 else if (data.has("access_token")) token = data.getString("access_token");
             }
 
+            // Extract user ID
+            if (response.has("user")) {
+                JSONObject user = response.getJSONObject("user");
+                if (user.has("id")) {
+                    userId = user.getInt("id");
+                }
+            } else if (response.has("data")) {
+                JSONObject data = response.getJSONObject("data");
+                if (data.has("user")) {
+                    JSONObject user = data.getJSONObject("user");
+                    if (user.has("id")) {
+                        userId = user.getInt("id");
+                    }
+                } else if (data.has("id")) {
+                    userId = data.getInt("id");
+                }
+            } else if (response.has("id")) {
+                userId = response.getInt("id");
+            }
+
             if (token != null && !token.isEmpty()) {
                 sessionManager.saveToken(token);
+                
+                // Save user ID if found
+                if (userId != -1) {
+                    sessionManager.saveUserId(userId);
+                    Log.d("AuthRepository", "Saved user ID: " + userId);
+                } else {
+                    Log.w("AuthRepository", "User ID not found in response");
+                }
+                
                 callback.onSuccess();
             } else {
                 callback.onError("Token not found in response");

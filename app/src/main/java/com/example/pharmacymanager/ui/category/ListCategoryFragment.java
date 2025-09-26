@@ -68,6 +68,9 @@ public class ListCategoryFragment extends Fragment {
         // Initialize repository
         categoryRepository = new CategoryRepository(requireContext());
 
+        // Test parsing with sample data
+        Category.testParsing();
+
         // Setup RecyclerView
         setupRecyclerView();
 
@@ -95,8 +98,19 @@ public class ListCategoryFragment extends Fragment {
 
             @Override
             public void onCategoryLongClick(Category category) {
-                // Handle long click (e.g., show context menu for edit/delete)
-                Toast.makeText(requireContext(), "Long clicked: " + category.getName(), Toast.LENGTH_SHORT).show();
+                // Handle long click - navigate to edit fragment
+                EditCategoryFragment editFragment = EditCategoryFragment.newInstance(category);
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragement_container, editFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            @Override
+            public void onCategoryDeleteClick(Category category) {
+                // Handle delete button click
+                showDeleteConfirmationDialog(category);
             }
         });
     }
@@ -124,16 +138,22 @@ public class ListCategoryFragment extends Fragment {
                 showLoading(false);
                 // swipeRefreshLayout.setRefreshing(false);
                 
+                android.util.Log.d("ListCategoryFragment", "Received response: " + response.toString());
+                
                 try {
                     List<Category> categories = parseCategoriesFromResponse(response);
+                    android.util.Log.d("ListCategoryFragment", "Setting " + categories.size() + " categories to adapter");
                     adapter.setCategories(categories);
                     
                     if (categories.isEmpty()) {
+                        android.util.Log.d("ListCategoryFragment", "No categories found, showing empty state");
                         showEmptyState(true);
                     } else {
+                        android.util.Log.d("ListCategoryFragment", "Categories loaded successfully, hiding empty state");
                         showEmptyState(false);
                     }
                 } catch (JSONException e) {
+                    android.util.Log.e("ListCategoryFragment", "Error parsing categories: " + e.getMessage(), e);
                     Toast.makeText(requireContext(), "Error parsing categories: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     showEmptyState(true);
                 }
@@ -154,14 +174,35 @@ public class ListCategoryFragment extends Fragment {
         
         if (response.has("data")) {
             JSONArray dataArray = response.getJSONArray("data");
+            android.util.Log.d("ListCategoryFragment", "Found " + dataArray.length() + " categories in response");
+            
+            // Log the structure of the first few categories for debugging
+            for (int debugIndex = 0; debugIndex < Math.min(3, dataArray.length()); debugIndex++) {
+                try {
+                    JSONObject debugJson = dataArray.getJSONObject(debugIndex);
+                    android.util.Log.d("ListCategoryFragment", "DEBUG - Category " + debugIndex + " structure: " + debugJson.toString());
+                } catch (Exception e) {
+                    android.util.Log.e("ListCategoryFragment", "DEBUG - Error reading category " + debugIndex, e);
+                }
+            }
             
             for (int i = 0; i < dataArray.length(); i++) {
-                JSONObject categoryJson = dataArray.getJSONObject(i);
-                Category category = Category.fromJson(categoryJson);
-                categories.add(category);
+                try {
+                    JSONObject categoryJson = dataArray.getJSONObject(i);
+                    android.util.Log.d("ListCategoryFragment", "Parsing category " + i + ": " + categoryJson.toString());
+                    Category category = Category.fromJsonSafe(categoryJson);
+                    categories.add(category);
+                    android.util.Log.d("ListCategoryFragment", "Successfully parsed category: " + category.getName());
+                } catch (Exception e) {
+                    android.util.Log.e("ListCategoryFragment", "Error parsing category " + i + ": " + e.getMessage(), e);
+                    // Continue with next category instead of failing completely
+                }
             }
+        } else {
+            android.util.Log.e("ListCategoryFragment", "No 'data' field found in response: " + response.toString());
         }
         
+        android.util.Log.d("ListCategoryFragment", "Total categories parsed: " + categories.size());
         return categories;
     }
 
@@ -180,5 +221,45 @@ public class ListCategoryFragment extends Fragment {
     // Method to refresh the list (can be called from AddCategoryFragment)
     public void refreshCategories() {
         loadCategories();
+    }
+
+    // Method to update a specific category in the list
+    public void updateCategoryInList(Category updatedCategory) {
+        adapter.updateCategory(updatedCategory);
+    }
+
+    private void showDeleteConfirmationDialog(Category category) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Delete Category")
+                .setMessage("Are you sure you want to delete '" + category.getName() + "'? This action cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    deleteCategory(category);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    public void deleteCategory(Category category) {
+        android.util.Log.d("ListCategoryFragment", "Starting delete for category: " + category.getName() + " (ID: " + category.getId() + ")");
+        categoryRepository.deleteCategory(category.getId(), new CategoryRepository.CategoryCallback() {
+            @Override
+            public void onSuccess(Category deletedCategory) {
+                android.util.Log.d("ListCategoryFragment", "Delete successful for category: " + category.getName());
+                Toast.makeText(requireContext(), "Category deleted successfully!", Toast.LENGTH_SHORT).show();
+                // Remove from adapter
+                adapter.removeCategory(category.getId());
+                
+                // Show empty state if no categories left
+                if (adapter.getItemCount() == 0) {
+                    showEmptyState(true);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                android.util.Log.e("ListCategoryFragment", "Delete failed for category: " + category.getName() + ", error: " + message);
+                Toast.makeText(requireContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
