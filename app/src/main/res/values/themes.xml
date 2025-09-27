@@ -2,9 +2,25 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.PharmacyManager" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="Theme.PharmacyManager" parent="Base.Theme.PharmacyManager" />
+
+    <!-- Dialog Styles -->
+    <style name="FullScreenDialogStyle" parent="Theme.Material3.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/MainBackColor</item>
+    </style>
+
+    <style name="DialogStyle" parent="Theme.Material3.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/MainBackColor</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

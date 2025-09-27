@@ -6,32 +6,86 @@
     android:layout_margin="8dp"
     android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/input_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="16dp">
+
+        <!-- Header row with category name and action buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/category_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Category Name"
+                android:textColor="@color/main_text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_bold" />
+
+            <!-- Action buttons -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="8dp">
+
+                <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_edit"
+                    android:contentDescription="Edit Category"
+                    android:tint="@color/MainColor"
+                    android:scaleType="centerInside" />
+
+                <ImageButton
+                    android:id="@+id/btn_delete"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_delete"
+                    android:contentDescription="Delete Category"
+                    android:tint="@color/deleteColor"
+                    android:scaleType="centerInside" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
+            android:id="@+id/category_description"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/category_title"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="4dp"
+            android:text="Category description goes here..."
+            android:textColor="@color/secondary_text_color"
+            android:textSize="14sp"
+            android:fontFamily="@font/roboto"
+            android:maxLines="2"
+            android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/textCategory"
+            android:id="@+id/category_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="14sp" />
+            android:layout_marginTop="8dp"
+            android:text="Created: 2025-01-01"
+            android:textColor="@color/input_hint"
+            android:textSize="12sp"
+            android:fontFamily="@font/roboto" />
 
     </LinearLayout>
 

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pharmacymanager.R;
 import com.example.pharmacymanager.ui.auth.LoginActivity;
+import com.example.pharmacymanager.data.local.SessionManager;
 
 
 public class SplashActivity extends AppCompatActivity {
@@ -53,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
         slogan.setAnimation(bottomAnim);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            // Always go to LoginActivity for now to avoid loops
             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
 
             Pair[] pairs = new Pair[2];
@@ -61,6 +63,7 @@ public class SplashActivity extends AppCompatActivity {
 
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, pairs);
             startActivity(intent, options.toBundle());
+            finish(); // Close splash activity
         }, SPLASH_DELAY);
     }
 }

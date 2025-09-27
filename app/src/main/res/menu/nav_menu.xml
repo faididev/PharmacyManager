@@ -8,15 +8,23 @@
 
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/nav_home"
+            android:icon="@drawable/nav_dashboard"
             android:title="@string/home"/>
         <item
             android:id="@+id/nav_product"
-            android:icon="@drawable/nav_home"
+            android:icon="@drawable/nav_medication"
             android:title="@string/products"/>
         <item
+            android:id="@+id/nav_customer"
+            android:icon="@drawable/nav_customer"
+            android:title="@string/customers"/>
+        <item
+            android:id="@+id/nav_order"
+            android:icon="@drawable/nav_prescription"
+            android:title="@string/orders"/>
+        <item
             android:id="@+id/nav_category"
-            android:icon="@drawable/nav_settings"
+            android:icon="@drawable/nav_category"
             android:title="@string/categories"/>
         <item
             android:id="@+id/nav_about"
