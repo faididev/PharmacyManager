@@ -75,21 +75,8 @@ public class AddCategoryFragment extends Fragment {
                 
                 Toast.makeText(requireContext(), "Category created successfully!", Toast.LENGTH_SHORT).show();
                 
-                // Clear form
-                nameInput.getEditText().setText("");
-                descriptionInput.getEditText().setText("");
-                
-                // Navigate back and refresh the list
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                    // Refresh the category list
-                    ListCategoryFragment listFragment = (ListCategoryFragment) getActivity()
-                            .getSupportFragmentManager()
-                            .findFragmentById(R.id.fragement_container);
-                    if (listFragment != null) {
-                        listFragment.refreshCategories();
-                    }
-                }
+                // Navigate back to list category page and refresh
+                navigateToListCategory();
             }
 
             @Override
@@ -139,5 +126,18 @@ public class AddCategoryFragment extends Fragment {
         }
 
         return isValid;
+    }
+
+    private void navigateToListCategory() {
+        if (getActivity() != null) {
+            // Create a new instance of ListCategoryFragment
+            ListCategoryFragment listFragment = new ListCategoryFragment();
+            
+            // Replace current fragment with list fragment
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_container, listFragment)
+                    .commit();
+        }
     }
 }

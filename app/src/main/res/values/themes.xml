@@ -9,4 +9,18 @@
     </style>
 
     <style name="Theme.PharmacyManager" parent="Base.Theme.PharmacyManager" />
+
+    <!-- Dialog Styles -->
+    <style name="FullScreenDialogStyle" parent="Theme.Material3.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/MainBackColor</item>
+    </style>
+
+    <style name="DialogStyle" parent="Theme.Material3.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/MainBackColor</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

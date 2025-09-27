@@ -290,20 +290,8 @@ public class AddProductFragment extends Fragment {
                 
                 Toast.makeText(requireContext(), "Product created successfully!", Toast.LENGTH_SHORT).show();
                 
-                // Clear form
-                clearForm();
-                
-                // Navigate back and refresh the list
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                    // Refresh the product list
-                    ListProductFragment listFragment = (ListProductFragment) getActivity()
-                            .getSupportFragmentManager()
-                            .findFragmentById(R.id.fragement_container);
-                    if (listFragment != null) {
-                        listFragment.refreshProducts();
-                    }
-                }
+                // Navigate back to list product page and refresh
+                navigateToListProduct();
             }
 
             @Override
@@ -477,5 +465,18 @@ public class AddProductFragment extends Fragment {
         }
 
         return isValid;
+    }
+
+    private void navigateToListProduct() {
+        if (getActivity() != null) {
+            // Create a new instance of ListProductFragment
+            ListProductFragment listFragment = new ListProductFragment();
+            
+            // Replace current fragment with list fragment
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_container, listFragment)
+                    .commit();
+        }
     }
 }

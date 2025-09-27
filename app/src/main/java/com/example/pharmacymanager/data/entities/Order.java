@@ -36,7 +36,8 @@ public class Order implements Serializable {
 
     // Parse from API response (handles both list and single order responses)
     public static Order fromJson(JSONObject json) throws JSONException {
-        android.util.Log.d("Order", "Parsing JSON: " + json.toString());
+        android.util.Log.d("Order", "=== PARSING ORDER JSON ===");
+        android.util.Log.d("Order", "Full JSON: " + json.toString());
         
         try {
             JSONObject orderData;
@@ -51,6 +52,9 @@ public class Order implements Serializable {
                 android.util.Log.d("Order", "Direct order object detected");
             }
             
+            android.util.Log.d("Order", "Order data keys: " + orderData.keys().next());
+            android.util.Log.d("Order", "Order data: " + orderData.toString());
+            
             // Try different response formats
             int id;
             int customerId;
@@ -64,7 +68,8 @@ public class Order implements Serializable {
             
             // Format 1: With attributes wrapper (like Category)
             if (orderData.has("attributes")) {
-                android.util.Log.d("Order", "Using attributes format");
+                android.util.Log.d("Order", "=== USING ATTRIBUTES FORMAT ===");
+                android.util.Log.d("Order", "Attributes: " + orderData.getJSONObject("attributes").toString());
                 JSONObject attributes = orderData.getJSONObject("attributes");
                 
                 id = orderData.getInt("id");
@@ -75,21 +80,29 @@ public class Order implements Serializable {
                 createdAt = attributes.optString("createdAt", "");
                 updatedAt = attributes.optString("updatedAt", "");
                 customerName = attributes.optString("customer_name", "");
+                android.util.Log.d("Order", "Customer name from attributes: '" + customerName + "'");
                 
                 // Parse items
                 items = new ArrayList<>();
                 if (attributes.has("items")) {
+                    android.util.Log.d("Order", "Found items in attributes, parsing...");
                     JSONArray itemsArray = attributes.getJSONArray("items");
+                    android.util.Log.d("Order", "Items array length: " + itemsArray.length());
                     for (int i = 0; i < itemsArray.length(); i++) {
                         JSONObject itemJson = itemsArray.getJSONObject(i);
+                        android.util.Log.d("Order", "Parsing item " + i + ": " + itemJson.toString());
                         OrderItem item = OrderItem.fromJson(itemJson);
                         items.add(item);
+                        android.util.Log.d("Order", "Item " + i + " added successfully");
                     }
+                } else {
+                    android.util.Log.w("Order", "No items found in attributes");
                 }
             }
             // Format 2: Direct fields (no attributes wrapper)
             else {
-                android.util.Log.d("Order", "Using direct fields format");
+                android.util.Log.d("Order", "=== USING DIRECT FIELDS FORMAT ===");
+                android.util.Log.d("Order", "Direct fields: " + orderData.toString());
                 
                 id = orderData.getInt("id");
                 customerId = orderData.getInt("customer_id");
@@ -99,23 +112,37 @@ public class Order implements Serializable {
                 createdAt = orderData.optString("createdAt", "");
                 updatedAt = orderData.optString("updatedAt", "");
                 customerName = orderData.optString("customer_name", "");
+                android.util.Log.d("Order", "Customer name from direct fields: '" + customerName + "'");
                 
                 // Parse items
                 items = new ArrayList<>();
                 if (orderData.has("items")) {
+                    android.util.Log.d("Order", "Found items in direct fields, parsing...");
                     JSONArray itemsArray = orderData.getJSONArray("items");
+                    android.util.Log.d("Order", "Items array length: " + itemsArray.length());
                     for (int i = 0; i < itemsArray.length(); i++) {
                         JSONObject itemJson = itemsArray.getJSONObject(i);
+                        android.util.Log.d("Order", "Parsing item " + i + ": " + itemJson.toString());
                         OrderItem item = OrderItem.fromJson(itemJson);
                         items.add(item);
+                        android.util.Log.d("Order", "Item " + i + " added successfully");
                     }
+                } else {
+                    android.util.Log.w("Order", "No items found in direct fields");
                 }
             }
             
-            android.util.Log.d("Order", "Parsed - ID: " + id + ", Customer ID: " + customerId + ", Status: " + status + ", Items: " + items.size());
+            android.util.Log.d("Order", "=== PARSING COMPLETE ===");
+            android.util.Log.d("Order", "ID: " + id);
+            android.util.Log.d("Order", "Customer ID: " + customerId);
+            android.util.Log.d("Order", "Customer Name: '" + customerName + "'");
+            android.util.Log.d("Order", "Status: " + status);
+            android.util.Log.d("Order", "Items count: " + items.size());
+            android.util.Log.d("Order", "Total amount: " + totalAmount);
             
             Order order = new Order(id, customerId, orderDate, status, items, totalAmount, createdAt, updatedAt);
             order.setCustomerName(customerName);
+            android.util.Log.d("Order", "Order created successfully with customer name: '" + order.getCustomerName() + "'");
             return order;
         } catch (JSONException e) {
             android.util.Log.e("Order", "Failed to parse order JSON: " + json.toString(), e);
@@ -187,6 +214,21 @@ public class Order implements Serializable {
     public void setItems(List<OrderItem> items) {
         this.items = items != null ? items : new ArrayList<>();
         calculateTotalAmount();
+    }
+
+    public void addItem(OrderItem item) {
+        if (this.items == null) {
+            this.items = new ArrayList<>();
+        }
+        this.items.add(item);
+        calculateTotalAmount();
+    }
+
+    public void removeItem(OrderItem item) {
+        if (this.items != null) {
+            this.items.remove(item);
+            calculateTotalAmount();
+        }
     }
 
     public double getTotalAmount() {

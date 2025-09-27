@@ -27,6 +27,62 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Search and Sort Container -->
+            <LinearLayout
+                android:id="@+id/searchSortContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/headerText">
+
+                <!-- Search Bar -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/searchInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxStrokeColor="@color/MainColor"
+                    app:hintTextColor="@color/MainColor">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Search products..."
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textColor="@color/main_text_color"
+                        android:textColorHint="@color/secondary_text_color" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Sort Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/sortButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sort"
+                    android:textColor="@color/MainBackColor"
+                    app:backgroundTint="@color/MainColor"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/nav_category"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconSize="18dp" />
+
+            </LinearLayout>
+
             <!-- Progress Bar -->
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -36,7 +92,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/headerText" />
+                app:layout_constraintTop_toBottomOf="@id/searchSortContainer" />
 
             <!-- Empty State Text -->
             <TextView
@@ -52,7 +108,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/headerText" />
+                app:layout_constraintTop_toBottomOf="@id/searchSortContainer" />
 
             <!-- RecyclerView for products -->
             <androidx.recyclerview.widget.RecyclerView
@@ -69,7 +125,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/headerText"
+                app:layout_constraintTop_toBottomOf="@id/searchSortContainer"
                 tools:listitem="@layout/rv_product_list_template" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -83,7 +139,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="Add Product"
-        android:src="@drawable/nav_home"
+        android:src="@drawable/ic_add"
         android:tint="@android:color/white"
         app:backgroundTint="@color/MainColor"
         app:layout_anchorGravity="bottom|end" />

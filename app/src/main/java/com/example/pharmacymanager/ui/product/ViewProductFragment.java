@@ -157,7 +157,7 @@ public class ViewProductFragment extends Fragment {
         btnEditProduct.setOnClickListener(v -> {
             // Create a Product object to pass to EditProductFragment
             Product product = new Product(
-                productUuid, productName, "", productDescription,
+                0, productUuid, productName, "", productDescription,
                 productQuantity, productTotal, productManufactureDate, productExpiryDate,
                 productCategoryId, productPrice, null, null
             );

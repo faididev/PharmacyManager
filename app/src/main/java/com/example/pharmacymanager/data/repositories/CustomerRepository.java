@@ -72,18 +72,44 @@ public class CustomerRepository {
     }
 
     public void getCustomers(CustomerListCallback callback) {
+        // Try to include user data in the request
+        String url = "customers?include=user";
+        Log.d("CustomerRepository", "Fetching customers from: " + url);
+        
         JsonObjectRequest req = ApiClient.jsonRequest(
                 appContext,
                 Request.Method.GET,
-                "customers",
+                url,
                 null,
                 response -> {
                     Log.d("CustomerRepository", "Get customers response=" + response.toString());
                     callback.onSuccess(response);
                 },
                 error -> {
+                    Log.w("CustomerRepository", "Get customers with include failed, trying without include: " + error.getMessage());
+                    // Fallback to original endpoint without include
+                    getCustomersWithoutInclude(callback);
+                }
+        );
+        ApiClient.enqueue(appContext, req);
+    }
+    
+    private void getCustomersWithoutInclude(CustomerListCallback callback) {
+        String url = "customers";
+        Log.d("CustomerRepository", "Fetching customers from fallback URL: " + url);
+        
+        JsonObjectRequest req = ApiClient.jsonRequest(
+                appContext,
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    Log.d("CustomerRepository", "Get customers fallback response=" + response.toString());
+                    callback.onSuccess(response);
+                },
+                error -> {
                     String message = parseError(error);
-                    Log.e("CustomerRepository", "Get customers failed: " + message, error);
+                    Log.e("CustomerRepository", "Get customers fallback failed: " + message, error);
                     callback.onError(message);
                 }
         );

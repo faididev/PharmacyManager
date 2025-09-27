@@ -83,7 +83,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="Add Category"
-        android:src="@drawable/nav_home"
+        android:src="@drawable/ic_add"
         android:tint="@android:color/white"
         app:backgroundTint="@color/MainColor"
         app:layout_anchorGravity="bottom|end" />

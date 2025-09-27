@@ -7,6 +7,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.widget.Toolbar;
 
@@ -32,6 +34,7 @@ import com.example.pharmacymanager.ui.product.AddProductFragment;
 import com.example.pharmacymanager.ui.product.ListProductFragment;
 import com.example.pharmacymanager.ui.auth.LoginActivity;
 import com.example.pharmacymanager.data.local.SessionManager;
+import com.example.pharmacymanager.data.repositories.AuthRepository;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -138,15 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragement_container, new HomeFragment()).commit();
         } else if (id == R.id.nav_logout) {
-            // Clear session and redirect to login
-            SessionManager sessionManager = new SessionManager(this);
-            sessionManager.clear();
-            Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-            
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            showLogoutConfirmationDialog();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -183,6 +178,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.fragement_container, AddOrderFragment.newInstance())
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void showLogoutConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes", (dialog, which) -> performLogout())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void performLogout() {
+        Log.d("MainActivity", "Starting logout process");
+        
+        // Show loading indicator
+        Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
+        
+        // Use AuthRepository to logout
+        AuthRepository authRepository = new AuthRepository(this);
+        authRepository.logout(new AuthRepository.AuthCallback() {
+            @Override
+            public void onSuccess() {
+                Log.d("MainActivity", "Logout successful");
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+                    
+                    // Navigate to login activity
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("MainActivity", "Logout error: " + message);
+                runOnUiThread(() -> {
+                    // Even if API call fails, clear local session and logout
+                    Toast.makeText(MainActivity.this, "Logged out locally", Toast.LENGTH_SHORT).show();
+                    
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                });
+            }
+        });
     }
 
 }

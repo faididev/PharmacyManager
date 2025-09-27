@@ -7,6 +7,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,17 +22,18 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class SignupActivity extends AppCompatActivity {
 
-    Button CallSignIn,login_btn;
+    Button CallSignIn, login_btn;
     ImageView image;
     TextView logoText, sloganText;
-    TextInputLayout username,email,password,confirmPassword;
+    TextInputLayout name, email, password, confirmPassword;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_up);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -42,7 +44,7 @@ public class SignupActivity extends AppCompatActivity {
         image = findViewById(R.id.logo_image);
         logoText = findViewById(R.id.logo_name);
         sloganText = findViewById(R.id.slogan_name);
-        username = findViewById(R.id.username);
+        name = findViewById(R.id.name);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         confirmPassword = findViewById(R.id.confirm_password);
@@ -58,7 +60,7 @@ public class SignupActivity extends AppCompatActivity {
                 pairs[0] = new Pair<View,String>(image,"logo_image");
                 pairs[1] = new Pair<View,String>(logoText,"logo_text");
                 pairs[2] = new Pair<View,String>(sloganText,"logo_desc");
-                pairs[3] = new Pair<View,String>(username,"logo_user");
+                pairs[3] = new Pair<View,String>(name,"logo_user");
                 pairs[4] = new Pair<View,String>(password,"logo_password");
                 pairs[5] = new Pair<View,String>(login_btn,"buttonlogin_trans");
                 pairs[6] = new Pair<View,String>(CallSignIn,"signin_signup_trans");
@@ -69,92 +71,99 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    public void registerUser(View view){
-        if(!validateUsername() | !validateEmail() | !validatePassword() | !validateConfirmPassword()){
+    public void registerUser(View view) {
+        if (!validateName() || !validateEmail() || !validatePassword() || !validateConfirmPassword()) {
             return;
         }
-        assert username.getEditText() != null;
+        
+        assert name.getEditText() != null;
         assert email.getEditText() != null;
         assert password.getEditText() != null;
 
-        String name = username.getEditText().getText().toString().trim();
+        String nameVal = name.getEditText().getText().toString().trim();
         String emailVal = email.getEditText().getText().toString().trim();
         String pass = password.getEditText().getText().toString().trim();
 
-        login_btn.setEnabled(false);
+        // Show loading state
+        showLoading(true);
+        
+        // Use the simplified registration with just name, email, password
         new com.example.pharmacymanager.data.repositories.AuthRepository(this)
-                .register(name, emailVal, pass, new com.example.pharmacymanager.data.repositories.AuthRepository.AuthCallback() {
+                .register(nameVal, emailVal, pass, new com.example.pharmacymanager.data.repositories.AuthRepository.AuthCallback() {
                     @Override
                     public void onSuccess() {
-                        login_btn.setEnabled(true);
-                        Toast.makeText(SignupActivity.this, "Registered successfully. Please log in.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
+                        showLoading(false);
+                        Toast.makeText(SignupActivity.this, "Account created successfully! You are now logged in.", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(SignupActivity.this, com.example.pharmacymanager.ui.MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     }
 
                     @Override
                     public void onError(String message) {
-                        login_btn.setEnabled(true);
-                        Toast.makeText(SignupActivity.this, message, Toast.LENGTH_SHORT).show();
+                        showLoading(false);
+                        Toast.makeText(SignupActivity.this, "Registration failed: " + message, Toast.LENGTH_LONG).show();
                     }
                 });
     }
-    private boolean validateUsername(){
-        assert username.getEditText() != null;
-        String val = username.getEditText().getText().toString().trim();
 
-        String noWhiteSpace = "^[A-Za-z0-9._]{4,15}$";
-        // Only letters, digits, . and _, between 4-15 chars
+    private void showLoading(boolean show) {
+        if (show) {
+            login_btn.setEnabled(false);
+            login_btn.setText("Creating Account...");
+        } else {
+            login_btn.setEnabled(true);
+            login_btn.setText("Register");
+        }
+    }
+    private boolean validateName() {
+        assert name.getEditText() != null;
+        String val = name.getEditText().getText().toString().trim();
 
-        if(val.isEmpty()) {
-            username.setError("Field cannot be empty");
+        if (val.isEmpty()) {
+            name.setError("Full name is required");
             return false;
-        }
-        else if (!val.matches(noWhiteSpace)) {
-            username.setError("Username must be 4-15 chars, no spaces, only letters/numbers/._");
+        } else if (val.length() < 2) {
+            name.setError("Name must be at least 2 characters");
             return false;
-        }
-        else {
-            username.setError(null);
-            username.setErrorEnabled(false);
+        } else if (val.length() > 50) {
+            name.setError("Name must be less than 50 characters");
+            return false;
+        } else {
+            name.setError(null);
+            name.setErrorEnabled(false);
             return true;
         }
     }
 
-    private boolean validateEmail(){
+    private boolean validateEmail() {
         assert email.getEditText() != null;
-        String val = email.getEditText().getText().toString();
-        String noWhiteSpacePattern = "^[^\\s]+$";
+        String val = email.getEditText().getText().toString().trim();
         String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
-        if(val.trim().isEmpty())
-        {
-            email.setError("Field Can not be empty");
+        if (val.isEmpty()) {
+            email.setError("Email is required");
             return false;
-        } else if (!val.matches(noWhiteSpacePattern))
-        {
-            email.setError("White spaces is not allowed");
+        } else if (!val.matches(emailRegex)) {
+            email.setError("Please enter a valid email address");
             return false;
-        } else if(!val.matches(emailRegex))
-        {
-            email.setError("Email format is invalid");
-            return false;
-        }
-        else {
+        } else {
             email.setError(null);
             email.setErrorEnabled(false);
             return true;
         }
     }
 
-    private boolean validatePassword(){
+    private boolean validatePassword() {
         assert password.getEditText() != null;
         String val = password.getEditText().getText().toString();
 
-        if(val.trim().isEmpty())
-        {
-            password.setError("Field Can not be empty");
+        if (val.isEmpty()) {
+            password.setError("Password is required");
+            return false;
+        } else if (val.length() < 8) {
+            password.setError("Password must be at least 8 characters");
             return false;
         } else {
             password.setError(null);
@@ -163,25 +172,24 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    private boolean validateConfirmPassword(){
+    private boolean validateConfirmPassword() {
         assert confirmPassword.getEditText() != null;
         assert password.getEditText() != null;
 
         String val = confirmPassword.getEditText().getText().toString();
         String valPassword = password.getEditText().getText().toString();
 
-        if(val.trim().isEmpty()) {
-            confirmPassword.setError("Field Can not be empty");
+        if (val.isEmpty()) {
+            confirmPassword.setError("Please confirm your password");
             return false;
-        }
-        else if(!val.equals(valPassword)) {
+        } else if (!val.equals(valPassword)) {
             confirmPassword.setError("Passwords do not match");
             return false;
-        }
-        else {
+        } else {
             confirmPassword.setError(null);
             confirmPassword.setErrorEnabled(false);
             return true;
         }
     }
+
 }

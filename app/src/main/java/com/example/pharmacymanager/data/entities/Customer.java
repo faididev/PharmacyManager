@@ -64,11 +64,38 @@ public class Customer implements Serializable {
                 JSONObject attributes = customerData.getJSONObject("attributes");
                 
                 id = customerData.getInt("id");
-                name = attributes.getString("name");
-                email = attributes.getString("email");
-                phone = attributes.getString("phone");
-                address = attributes.optString("address", "");
-                userId = attributes.getInt("user_id");
+                
+                // Check if user data is in includes (new format)
+                if (customerData.has("includes") && customerData.getJSONObject("includes").has("user")) {
+                    android.util.Log.d("Customer", "Using includes.user format");
+                    JSONObject userData = customerData.getJSONObject("includes").getJSONObject("user");
+                    JSONObject userAttributes = userData.getJSONObject("attributes");
+                    
+                    name = userAttributes.getString("name");
+                    email = userAttributes.getString("email");
+                    phone = userAttributes.optString("phone", "");
+                    address = userAttributes.optString("address", "");
+                    
+                    // Get user_id from relationships
+                    if (customerData.has("relationships") && 
+                        customerData.getJSONObject("relationships").has("user") &&
+                        customerData.getJSONObject("relationships").getJSONObject("user").has("data")) {
+                        userId = customerData.getJSONObject("relationships")
+                                           .getJSONObject("user")
+                                           .getJSONObject("data")
+                                           .getInt("id");
+                    } else {
+                        userId = userData.optInt("id", 1);
+                    }
+                } else {
+                    // Fallback to old format
+                    name = attributes.optString("name", "Unknown Customer");
+                    email = attributes.optString("email", "");
+                    phone = attributes.optString("phone", "");
+                    address = attributes.optString("address", "");
+                    userId = attributes.optInt("user_id", 1);
+                }
+                
                 loyaltyPoints = attributes.optInt("loyalty_points", 0);
                 createdAt = attributes.optString("createdAt", "");
                 updatedAt = attributes.optString("updatedAt", "");
@@ -231,14 +258,42 @@ public class Customer implements Serializable {
                 if (customerData.has("attributes")) {
                     JSONObject attributes = customerData.optJSONObject("attributes");
                     if (attributes != null) {
-                        name = attributes.optString("name", name);
-                        email = attributes.optString("email", email);
-                        phone = attributes.optString("phone", phone);
-                        address = attributes.optString("address", address);
-                        userId = attributes.optInt("user_id", userId);
                         loyaltyPoints = attributes.optInt("loyalty_points", loyaltyPoints);
                     }
                 }
+                
+                // Try to get user data from includes
+                if (customerData.has("includes") && customerData.optJSONObject("includes").has("user")) {
+                    JSONObject userData = customerData.optJSONObject("includes").optJSONObject("user");
+                    if (userData != null && userData.has("attributes")) {
+                        JSONObject userAttributes = userData.optJSONObject("attributes");
+                        if (userAttributes != null) {
+                            name = userAttributes.optString("name", name);
+                            email = userAttributes.optString("email", email);
+                            phone = userAttributes.optString("phone", phone);
+                            address = userAttributes.optString("address", address);
+                        }
+                    }
+                }
+                
+                // Try to get user_id from relationships
+                if (customerData.has("relationships") && 
+                    customerData.optJSONObject("relationships").has("user") &&
+                    customerData.optJSONObject("relationships").optJSONObject("user").has("data")) {
+                    JSONObject userData = customerData.optJSONObject("relationships")
+                                                   .optJSONObject("user")
+                                                   .optJSONObject("data");
+                    if (userData != null) {
+                        userId = userData.optInt("id", userId);
+                    }
+                }
+                
+                // If we still don't have a proper name, try to use email as name
+                if (name.equals("Unknown Customer") && !email.isEmpty()) {
+                    name = email.split("@")[0]; // Use part before @ as name
+                }
+                
+                android.util.Log.d("Customer", "Safe parsing result - ID: " + id + ", Name: " + name + ", Email: " + email);
                 
                 return new Customer(id, name, email, phone, address, userId, loyaltyPoints, "", "");
             } catch (Exception ex) {
@@ -251,64 +306,44 @@ public class Customer implements Serializable {
     // Test method to verify parsing with sample data
     public static void testParsing() {
         try {
-            // Test list response format (direct customer object)
-            String listResponseJson = "{\n" +
+            // Test with the actual API response format
+            String testJson = "{\n" +
                 "  \"type\": \"customer\",\n" +
-                "  \"id\": 1,\n" +
+                "  \"id\": 2,\n" +
                 "  \"attributes\": {\n" +
-                "    \"name\": \"John Doe\",\n" +
-                "    \"email\": \"john@example.com\",\n" +
-                "    \"phone\": \"+1234567890\",\n" +
-                "    \"address\": \"123 Main St\",\n" +
-                "    \"user_id\": 1,\n" +
-                "    \"loyalty_points\": 100,\n" +
-                "    \"createdAt\": \"2025-01-01T10:00:00.000000Z\",\n" +
-                "    \"updatedAt\": \"2025-01-01T10:00:00.000000Z\"\n" +
-                "  }\n" +
-                "}";
-            
-            JSONObject listJson = new JSONObject(listResponseJson);
-            Customer listCustomer = fromJson(listJson);
-            android.util.Log.d("Customer", "List response parsing successful: " + listCustomer.getName());
-            
-            // Test single customer response format (with data wrapper)
-            String singleResponseJson = "{\n" +
-                "  \"data\": {\n" +
-                "    \"type\": \"customer\",\n" +
-                "    \"id\": 1,\n" +
-                "    \"attributes\": {\n" +
-                "      \"name\": \"Jane Smith\",\n" +
-                "      \"email\": \"jane@example.com\",\n" +
-                "      \"phone\": \"+0987654321\",\n" +
-                "      \"address\": \"456 Oak Ave\",\n" +
-                "      \"user_id\": 1,\n" +
-                "      \"loyalty_points\": 50,\n" +
-                "      \"createdAt\": \"2025-01-01T10:00:00.000000Z\",\n" +
-                "      \"updatedAt\": \"2025-01-01T10:00:00.000000Z\"\n" +
+                "    \"loyalty_points\": \"100\",\n" +
+                "    \"createdAt\": \"2025-08-31T20:49:06.000000Z\",\n" +
+                "    \"updatedAt\": \"2025-08-31T20:49:06.000000Z\"\n" +
+                "  },\n" +
+                "  \"relationships\": {\n" +
+                "    \"user\": {\n" +
+                "      \"data\": {\n" +
+                "        \"type\": \"user\",\n" +
+                "        \"id\": 13\n" +
+                "      }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"includes\": {\n" +
+                "    \"user\": {\n" +
+                "      \"type\": \"user\",\n" +
+                "      \"id\": \"addf1f2c-6789-41db-8b6e-649085ee5807\",\n" +
+                "      \"attributes\": {\n" +
+                "        \"name\": \"yassine\",\n" +
+                "        \"email\": \"yacin.wo@gmail.com\"\n" +
+                "      }\n" +
                 "    }\n" +
                 "  }\n" +
                 "}";
             
-            JSONObject singleJson = new JSONObject(singleResponseJson);
-            Customer singleCustomer = fromJson(singleJson);
-            android.util.Log.d("Customer", "Single response parsing successful: " + singleCustomer.getName());
+            JSONObject testCustomerJson = new JSONObject(testJson);
+            Customer testCustomer = Customer.fromJson(testCustomerJson);
             
-            // Test direct fields format (no attributes wrapper)
-            String directResponseJson = "{\n" +
-                "  \"id\": 2,\n" +
-                "  \"name\": \"Bob Johnson\",\n" +
-                "  \"email\": \"bob@example.com\",\n" +
-                "  \"phone\": \"+1122334455\",\n" +
-                "  \"address\": \"789 Pine St\",\n" +
-                "  \"user_id\": 1,\n" +
-                "  \"loyalty_points\": 25,\n" +
-                "  \"createdAt\": \"2025-01-01T10:00:00.000000Z\",\n" +
-                "  \"updatedAt\": \"2025-01-01T10:00:00.000000Z\"\n" +
-                "}";
-            
-            JSONObject directJson = new JSONObject(directResponseJson);
-            Customer directCustomer = fromJson(directJson);
-            android.util.Log.d("Customer", "Direct fields parsing successful: " + directCustomer.getName());
+            android.util.Log.d("Customer", "Test parsing successful:");
+            android.util.Log.d("Customer", "ID: " + testCustomer.getId());
+            android.util.Log.d("Customer", "Name: " + testCustomer.getName());
+            android.util.Log.d("Customer", "Email: " + testCustomer.getEmail());
+            android.util.Log.d("Customer", "User ID: " + testCustomer.getUserId());
+            android.util.Log.d("Customer", "Loyalty Points: " + testCustomer.getLoyaltyPoints());
             
         } catch (Exception e) {
             android.util.Log.e("Customer", "Test parsing failed: " + e.getMessage(), e);

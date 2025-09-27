@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class OrderItem implements Serializable {
     private int productId;
+    private String productUuid; // For products with UUID
     private int quantity;
     private double price;
     private String productName; // For display purposes
@@ -23,6 +24,20 @@ public class OrderItem implements Serializable {
         this.quantity = quantity;
         this.price = price;
         this.productName = productName;
+    }
+
+    // Constructor for products with UUID
+    public OrderItem(String productUuid, int quantity, double price, String productName) {
+        this.productUuid = productUuid;
+        this.quantity = quantity;
+        this.price = price;
+        this.productName = productName;
+        // Try to parse UUID as int for API compatibility
+        try {
+            this.productId = Integer.parseInt(productUuid);
+        } catch (NumberFormatException e) {
+            this.productId = 0; // Will be handled in toJson()
+        }
     }
 
     // Parse from API response
@@ -62,6 +77,14 @@ public class OrderItem implements Serializable {
         this.productId = productId;
     }
 
+    public String getProductUuid() {
+        return productUuid;
+    }
+
+    public void setProductUuid(String productUuid) {
+        this.productUuid = productUuid;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -94,6 +117,7 @@ public class OrderItem implements Serializable {
     public String toString() {
         return "OrderItem{" +
                 "productId=" + productId +
+                ", productUuid='" + productUuid + '\'' +
                 ", quantity=" + quantity +
                 ", price=" + price +
                 ", productName='" + productName + '\'' +

@@ -13,12 +13,27 @@ import com.example.pharmacymanager.R;
 import com.example.pharmacymanager.data.entities.Product;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
+    public enum SortType {
+        NONE,
+        QUANTITY_ASC,
+        QUANTITY_DESC,
+        NAME_ASC,
+        NAME_DESC,
+        PRICE_ASC,
+        PRICE_DESC
+    }
+
     private List<Product> products;
+    private List<Product> filteredProducts;
     private OnProductClickListener listener;
+    private String currentSearchQuery = "";
+    private SortType currentSortType = SortType.NONE;
 
     public interface OnProductClickListener {
         void onProductClick(Product product);
@@ -28,38 +43,92 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public ProductAdapter() {
         this.products = new ArrayList<>();
+        this.filteredProducts = new ArrayList<>();
     }
 
     public void setProducts(List<Product> products) {
         this.products = products != null ? products : new ArrayList<>();
         android.util.Log.d("ProductAdapter", "Setting " + this.products.size() + " products to adapter");
+        applyFiltersAndSort();
+    }
+
+    public void filterProducts(String query) {
+        currentSearchQuery = query != null ? query.toLowerCase().trim() : "";
+        applyFiltersAndSort();
+    }
+
+    public void sortProducts(SortType sortType) {
+        currentSortType = sortType;
+        applyFiltersAndSort();
+    }
+
+    private void applyFiltersAndSort() {
+        filteredProducts.clear();
+        
+        // Apply search filter
+        for (Product product : products) {
+            if (currentSearchQuery.isEmpty() || 
+                product.getName().toLowerCase().contains(currentSearchQuery) ||
+                (product.getSku() != null && product.getSku().toLowerCase().contains(currentSearchQuery)) ||
+                (product.getDescription() != null && product.getDescription().toLowerCase().contains(currentSearchQuery))) {
+                filteredProducts.add(product);
+            }
+        }
+        
+        // Apply sorting
+        switch (currentSortType) {
+            case QUANTITY_ASC:
+                Collections.sort(filteredProducts, (p1, p2) -> Integer.compare(p1.getQuantity(), p2.getQuantity()));
+                break;
+            case QUANTITY_DESC:
+                Collections.sort(filteredProducts, (p1, p2) -> Integer.compare(p2.getQuantity(), p1.getQuantity()));
+                break;
+            case NAME_ASC:
+                Collections.sort(filteredProducts, (p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
+                break;
+            case NAME_DESC:
+                Collections.sort(filteredProducts, (p1, p2) -> p2.getName().compareToIgnoreCase(p1.getName()));
+                break;
+            case PRICE_ASC:
+                Collections.sort(filteredProducts, (p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
+                break;
+            case PRICE_DESC:
+                Collections.sort(filteredProducts, (p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()));
+                break;
+            case NONE:
+            default:
+                // No sorting
+                break;
+        }
+        
+        android.util.Log.d("ProductAdapter", "Filtered and sorted products: " + filteredProducts.size());
         notifyDataSetChanged();
     }
 
     public void addProduct(Product product) {
         this.products.add(product);
-        notifyItemInserted(products.size() - 1);
+        applyFiltersAndSort();
     }
 
     public void updateProduct(Product product) {
         for (int i = 0; i < products.size(); i++) {
             if (products.get(i).getUuid().equals(product.getUuid())) {
                 products.set(i, product);
-                notifyItemChanged(i);
                 android.util.Log.d("ProductAdapter", "Updated product: " + product.getName());
                 break;
             }
         }
+        applyFiltersAndSort();
     }
 
     public void removeProduct(String uuid) {
         for (int i = 0; i < products.size(); i++) {
             if (products.get(i).getUuid().equals(uuid)) {
                 products.remove(i);
-                notifyItemRemoved(i);
                 break;
             }
         }
+        applyFiltersAndSort();
     }
 
     public void setOnProductClickListener(OnProductClickListener listener) {
@@ -76,14 +145,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Product product = products.get(position);
+        Product product = filteredProducts.get(position);
         holder.bind(product);
     }
 
     @Override
     public int getItemCount() {
-        android.util.Log.d("ProductAdapter", "getItemCount() called, returning: " + products.size());
-        return products.size();
+        android.util.Log.d("ProductAdapter", "getItemCount() called, returning: " + filteredProducts.size());
+        return filteredProducts.size();
     }
 
     class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -112,7 +181,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onProductLongClick(products.get(position)); // Use edit functionality
+                        listener.onProductLongClick(filteredProducts.get(position)); // Use edit functionality
                     }
                 }
             });
@@ -121,7 +190,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onProductDeleteClick(products.get(position));
+                        listener.onProductDeleteClick(filteredProducts.get(position));
                     }
                 }
             });
@@ -131,7 +200,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onProductClick(products.get(position));
+                        listener.onProductClick(filteredProducts.get(position));
                     }
                 }
             });
@@ -144,7 +213,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                         v.setAlpha(0.7f);
                         v.postDelayed(() -> v.setAlpha(1.0f), 150);
                         
-                        listener.onProductLongClick(products.get(position));
+                        listener.onProductLongClick(filteredProducts.get(position));
                         return true;
                     }
                 }

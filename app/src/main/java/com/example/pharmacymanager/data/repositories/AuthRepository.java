@@ -7,6 +7,8 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.pharmacymanager.data.local.SessionManager;
 import com.example.pharmacymanager.data.remote.ApiClient;
+import com.example.pharmacymanager.data.entities.User;
+import com.example.pharmacymanager.data.entities.Customer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +56,70 @@ public class AuthRepository {
         }
     }
 
+    public void registerWithCustomer(String username, String email, String password, String phone, String address, int loyaltyPoints, AuthCallback callback) {
+        Log.d("AuthRepository", "Starting two-step registration: User -> Customer");
+        
+        // Step 1: Create User
+        UserRepository userRepository = new UserRepository(appContext);
+        userRepository.createUser(username, email, password, phone, address, new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User user) {
+                Log.d("AuthRepository", "User created successfully with ID: " + user.getId());
+                
+                // Step 2: Create Customer with the user ID
+                createCustomerFromUser(user, password, loyaltyPoints, callback);
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("AuthRepository", "Failed to create user: " + message);
+                callback.onError("Failed to create user: " + message);
+            }
+        });
+    }
+
+    private void createCustomerFromUser(User user, String password, int loyaltyPoints, AuthCallback callback) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("name", user.getName());
+            body.put("email", user.getEmail());
+            body.put("phone", user.getPhone() != null ? user.getPhone() : "");
+            body.put("address", user.getAddress() != null ? user.getAddress() : "");
+            body.put("user_id", user.getId());
+            body.put("loyalty_points", loyaltyPoints);
+
+            Log.d("AuthRepository", "Create customer request body=" + body.toString());
+
+            ApiClient.enqueue(appContext, ApiClient.jsonRequest(
+                    appContext,
+                    Request.Method.POST,
+                    "customers", // Customer endpoint
+                    body,
+                    response -> {
+                        Log.d("AuthRepository", "Create customer response=" + response.toString());
+                        try {
+                            Customer customer = Customer.fromJson(response);
+                            Log.d("AuthRepository", "Customer created successfully with ID: " + customer.getId());
+                            
+                            // Now login the user to get the token
+                            Log.d("AuthRepository", "Customer created successfully, now logging in user");
+                            login(user.getEmail(), password, callback);
+                        } catch (JSONException e) {
+                            Log.e("AuthRepository", "Failed to parse customer response: " + e.getMessage());
+                            callback.onError("Customer created but failed to parse response: " + e.getMessage());
+                        }
+                    },
+                    error -> {
+                        Log.e("AuthRepository", "Failed to create customer: " + error.getMessage());
+                        callback.onError("Failed to create customer: " + error.getMessage());
+                    }
+            ));
+        } catch (JSONException e) {
+            Log.e("AuthRepository", "Failed to create customer request: " + e.getMessage());
+            callback.onError("Failed to create customer request: " + e.getMessage());
+        }
+    }
+
     public void login(String email, String password, AuthCallback callback) {
         try {
             JSONObject body = new JSONObject();
@@ -78,6 +144,39 @@ public class AuthRepository {
         } catch (JSONException e) {
             callback.onError(e.getMessage());
         }
+    }
+
+    public void logout(AuthCallback callback) {
+        Log.d("AuthRepository", "Starting logout process");
+        
+        // Get the current token
+        String token = sessionManager.getToken();
+        if (token == null || token.isEmpty()) {
+            Log.w("AuthRepository", "No token found, clearing local session only");
+            sessionManager.clear();
+            callback.onSuccess();
+            return;
+        }
+
+        // Make API call to logout
+        ApiClient.enqueue(appContext, ApiClient.jsonRequest(
+                appContext,
+                Request.Method.POST,
+                "auth/logout",
+                null,
+                response -> {
+                    Log.d("AuthRepository", "Logout API response=" + response.toString());
+                    // Clear local session regardless of API response
+                    sessionManager.clear();
+                    callback.onSuccess();
+                },
+                error -> {
+                    Log.w("AuthRepository", "Logout API failed, but clearing local session: " + error.getMessage());
+                    // Clear local session even if API call fails
+                    sessionManager.clear();
+                    callback.onSuccess();
+                }
+        ));
     }
 
     // Registration flow removed to simplify project

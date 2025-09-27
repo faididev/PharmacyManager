@@ -108,17 +108,8 @@ public class EditCategoryFragment extends Fragment {
                 
                 Toast.makeText(requireContext(), "Category updated successfully!", Toast.LENGTH_SHORT).show();
                 
-                // Navigate back and update the specific category in the list
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                    // Update the specific category in the list
-                    ListCategoryFragment listFragment = (ListCategoryFragment) getActivity()
-                            .getSupportFragmentManager()
-                            .findFragmentById(R.id.fragement_container);
-                    if (listFragment != null) {
-                        listFragment.updateCategoryInList(category);
-                    }
-                }
+                // Navigate back to list category page
+                navigateToListCategory();
             }
 
             @Override
@@ -147,17 +138,8 @@ public class EditCategoryFragment extends Fragment {
                             
                             Toast.makeText(requireContext(), "Category deleted successfully!", Toast.LENGTH_SHORT).show();
                             
-                            // Navigate back and remove the category from the list
-                            if (getActivity() != null) {
-                                getActivity().onBackPressed();
-                                // Remove the category from the list
-                                ListCategoryFragment listFragment = (ListCategoryFragment) getActivity()
-                                        .getSupportFragmentManager()
-                                        .findFragmentById(R.id.fragement_container);
-                                if (listFragment != null) {
-                                    listFragment.deleteCategory(category);
-                                }
-                            }
+                            // Navigate back to list category page
+                            navigateToListCategory();
                         }
 
                         @Override
@@ -202,5 +184,18 @@ public class EditCategoryFragment extends Fragment {
         }
 
         return isValid;
+    }
+
+    private void navigateToListCategory() {
+        if (getActivity() != null) {
+            // Create a new instance of ListCategoryFragment
+            ListCategoryFragment listFragment = new ListCategoryFragment();
+            
+            // Replace current fragment with list fragment
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_container, listFragment)
+                    .commit();
+        }
     }
 }

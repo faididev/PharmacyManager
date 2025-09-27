@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Product {
+    private int id;
     private String uuid;
     private String name;
     private String sku;
@@ -19,9 +20,10 @@ public class Product {
 
     public Product() {}
 
-    public Product(String uuid, String name, String sku, String description, 
+    public Product(int id, String uuid, String name, String sku, String description, 
                    int quantity, int total, String manufactureDate, String expiryDate, 
                    int categoryId, double price, String createdAt, String updatedAt) {
+        this.id = id;
         this.uuid = uuid;
         this.name = name;
         this.sku = sku;
@@ -56,7 +58,10 @@ public class Product {
             
             attributes = productData.getJSONObject("attributes");
             
+            int id = productData.getInt("id");
             String uuid = productData.getString("uuid");
+            
+            android.util.Log.d("Product", "Parsing product - ID: " + id + ", UUID: " + uuid);
             String name = attributes.getString("name");
             String sku = attributes.optString("sku", "");
             String description = attributes.optString("description", "");
@@ -69,9 +74,10 @@ public class Product {
             String createdAt = attributes.optString("createdAt", "");
             String updatedAt = attributes.optString("updatedAt", "");
             
-            android.util.Log.d("Product", "Parsed - UUID: " + uuid + ", Name: " + name + ", Price: " + price);
+            android.util.Log.d("Product", "Parsed - ID: " + id + ", UUID: " + uuid + ", Name: " + name + ", Price: " + price);
             
             return new Product(
+                id,
                 uuid,
                 name,
                 sku,
@@ -107,6 +113,14 @@ public class Product {
     }
 
     // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getUuid() {
         return uuid;
     }
@@ -242,10 +256,10 @@ public class Product {
                     }
                 }
                 
-                return new Product(uuid, name, "", "", 0, 0, "", "", 0, 0.0, "", "");
+                return new Product(0, uuid, name, "", "", 0, 0, "", "", 0, 0.0, "", "");
             } catch (Exception ex) {
                 android.util.Log.e("Product", "All parsing methods failed", ex);
-                return new Product("", "Parse Error", "", "Failed to parse product", 0, 0, "", "", 0, 0.0, "", "");
+                return new Product(0, "", "Parse Error", "", "Failed to parse product", 0, 0, "", "", 0, 0.0, "", "");
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.example.pharmacymanager.ui.product;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pharmacymanager.R;
 import com.example.pharmacymanager.data.entities.Product;
 import com.example.pharmacymanager.data.repositories.ProductRepository;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +38,9 @@ public class ListProductFragment extends Fragment {
     private TextView emptyStateText;
     private FloatingActionButton fabAddProduct;
     private ProductRepository productRepository;
+    private TextInputEditText searchEditText;
+    private MaterialButton sortButton;
+    private ProductAdapter.SortType currentSortType = ProductAdapter.SortType.NONE;
 
     public ListProductFragment() {
         // Required empty public constructor
@@ -61,6 +68,8 @@ public class ListProductFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         emptyStateText = view.findViewById(R.id.emptyStateText);
         fabAddProduct = view.findViewById(R.id.fabAddProduct);
+        searchEditText = view.findViewById(R.id.searchEditText);
+        sortButton = view.findViewById(R.id.sortButton);
 
         // Initialize repository
         productRepository = new ProductRepository(requireContext());
@@ -75,6 +84,13 @@ public class ListProductFragment extends Fragment {
         loadProducts();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Load products when fragment becomes visible
+        loadProducts();
     }
 
     private void setupRecyclerView() {
@@ -123,6 +139,24 @@ public class ListProductFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+
+        // Search functionality
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.filterProducts(s.toString());
+                updateEmptyState();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Sort functionality
+        sortButton.setOnClickListener(v -> showSortDialog());
     }
 
     private void loadProducts() {
@@ -210,6 +244,91 @@ public class ListProductFragment extends Fragment {
         emptyStateText.setVisibility(show ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+    }
+
+    private void updateEmptyState() {
+        boolean isEmpty = adapter.getItemCount() == 0;
+        showEmptyState(isEmpty);
+    }
+
+    private void showSortDialog() {
+        String[] sortOptions = {
+            "No Sorting",
+            "Quantity (Low to High)",
+            "Quantity (High to Low)",
+            "Name (A to Z)",
+            "Name (Z to A)",
+            "Price (Low to High)",
+            "Price (High to Low)"
+        };
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Sort Products")
+                .setItems(sortOptions, (dialog, which) -> {
+                    ProductAdapter.SortType sortType;
+                    switch (which) {
+                        case 0:
+                            sortType = ProductAdapter.SortType.NONE;
+                            break;
+                        case 1:
+                            sortType = ProductAdapter.SortType.QUANTITY_ASC;
+                            break;
+                        case 2:
+                            sortType = ProductAdapter.SortType.QUANTITY_DESC;
+                            break;
+                        case 3:
+                            sortType = ProductAdapter.SortType.NAME_ASC;
+                            break;
+                        case 4:
+                            sortType = ProductAdapter.SortType.NAME_DESC;
+                            break;
+                        case 5:
+                            sortType = ProductAdapter.SortType.PRICE_ASC;
+                            break;
+                        case 6:
+                            sortType = ProductAdapter.SortType.PRICE_DESC;
+                            break;
+                        default:
+                            sortType = ProductAdapter.SortType.NONE;
+                    }
+                    
+                    currentSortType = sortType;
+                    adapter.sortProducts(sortType);
+                    updateEmptyState();
+                    
+                    // Update sort button text
+                    updateSortButtonText();
+                })
+                .show();
+    }
+
+    private void updateSortButtonText() {
+        String buttonText;
+        switch (currentSortType) {
+            case QUANTITY_ASC:
+                buttonText = "Qty ↑";
+                break;
+            case QUANTITY_DESC:
+                buttonText = "Qty ↓";
+                break;
+            case NAME_ASC:
+                buttonText = "Name A-Z";
+                break;
+            case NAME_DESC:
+                buttonText = "Name Z-A";
+                break;
+            case PRICE_ASC:
+                buttonText = "Price ↑";
+                break;
+            case PRICE_DESC:
+                buttonText = "Price ↓";
+                break;
+            case NONE:
+            default:
+                buttonText = "Sort";
+                break;
+        }
+        sortButton.setText(buttonText);
     }
 
     // Method to refresh the list (can be called from AddProductFragment)

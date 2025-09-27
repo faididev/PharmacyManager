@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/MainBackColor"
     tools:context=".ui.auth.SignupActivity">
 
     <ScrollView
+        android:id="@+id/root_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,10 +29,11 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:transitionName="@string/this_is_the_logo"
                 android:contentDescription="@string/this_is_the_logo"
-                android:src="@drawable/pharmacy"
-                android:transitionName="@string/this_is_the_logo" />
-
+                android:src="@drawable/pharmacy" />
 
             <TextView
                 android:id="@+id/logo_name"
@@ -40,10 +42,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_bold"
+                android:transitionName="@string/logo_text"
                 android:text="@string/bonjour"
                 android:textColor="@color/main_text_color"
-                android:textSize="28sp"
-                android:transitionName="@string/logo_text" />
+                android:textAlignment="center"
+                android:textSize="28sp" />
 
             <TextView
                 android:id="@+id/slogan_name"
@@ -63,12 +66,13 @@
                 android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
+                <!-- Name Field -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/username"
+                    android:id="@+id/name"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/username"
+                    android:hint="Full Name"
                     android:transitionName="@string/logo_user"
                     app:boxStrokeColor="@color/input_focused_border"
                     app:hintTextColor="@color/input_hint"
@@ -77,12 +81,14 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
                         android:inputType="textPersonName"
                         android:textColor="@color/input_text"
-                        android:textColorHint="@color/input_hint" />
+                        android:textColorHint="@color/input_hint"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Email Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/email"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -97,12 +103,14 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
                         android:inputType="textEmailAddress"
                         android:textColor="@color/input_text"
-                        android:textColorHint="@color/input_hint" />
+                        android:textColorHint="@color/input_hint"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Password Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/password"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -126,6 +134,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Confirm Password Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/confirm_password"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -149,7 +158,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-
                 <Button
                     android:id="@+id/signup_screen"
                     android:layout_width="match_parent"
@@ -162,7 +170,8 @@
                     android:text="@string/register"
                     android:textAllCaps="false"
                     android:textColor="@color/MainBackColor"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:transitionName="@string/buttonlogin_trans" />
 
                 <Button
                     android:id="@+id/signin_screen"
@@ -173,15 +182,13 @@
                     android:background="@color/transpirant"
                     android:elevation="0dp"
                     android:fontFamily="@font/roboto"
-                    android:text="@string/already_have_an_account"
-                    android:textAllCaps="false"
-                    android:textColor="@color/main_text_color"
                     android:textSize="14sp"
-                    android:transitionName="@string/signin_signup_trans" />
+                    android:text="@string/already_have_an_account"
+                    android:textColor="@color/main_text_color"
+                    android:transitionName="@string/signin_signup_trans"/>
 
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

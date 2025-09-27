@@ -89,12 +89,32 @@ public class ListOrderFragment extends Fragment {
         adapter.setOnOrderClickListener(new OrderAdapter.OnOrderClickListener() {
             @Override
             public void onOrderClick(Order order) {
-                // Navigate to ViewOrderFragment
-                ViewOrderFragment viewFragment = ViewOrderFragment.newInstance(order);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragement_container, viewFragment)
-                        .addToBackStack(null)
-                        .commit();
+                try {
+                    android.util.Log.d("ListOrderFragment", "=== ORDER CLICKED ===");
+                    android.util.Log.d("ListOrderFragment", "Order: " + order.toString());
+                    
+                    if (order == null) {
+                        android.util.Log.e("ListOrderFragment", "Order is null!");
+                        Toast.makeText(requireContext(), "Error: Order data is invalid", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
+                    // Navigate to ViewOrderFragment
+                    ViewOrderFragment viewFragment = ViewOrderFragment.newInstance(order);
+                    if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragement_container, viewFragment)
+                                .addToBackStack(null)
+                                .commit();
+                        android.util.Log.d("ListOrderFragment", "Navigation to ViewOrderFragment successful");
+                    } else {
+                        android.util.Log.e("ListOrderFragment", "Activity or FragmentManager is null!");
+                        Toast.makeText(requireContext(), "Error: Cannot navigate to order details", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    android.util.Log.e("ListOrderFragment", "Error navigating to order details: " + e.getMessage(), e);
+                    Toast.makeText(requireContext(), "Error opening order details: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -145,17 +165,29 @@ public class ListOrderFragment extends Fragment {
     }
 
     private List<Order> parseOrdersFromResponse(JSONObject response) throws JSONException {
+        android.util.Log.d("ListOrderFragment", "=== PARSING ORDERS FROM RESPONSE ===");
+        android.util.Log.d("ListOrderFragment", "Full response: " + response.toString());
+        
         List<Order> orders = new ArrayList<>();
         
         if (response.has("data")) {
             JSONArray dataArray = response.getJSONArray("data");
+            android.util.Log.d("ListOrderFragment", "Data array length: " + dataArray.length());
+            
             for (int i = 0; i < dataArray.length(); i++) {
                 JSONObject orderJson = dataArray.getJSONObject(i);
+                android.util.Log.d("ListOrderFragment", "Parsing order " + i + ": " + orderJson.toString());
+                
                 Order order = Order.fromJson(orderJson);
                 orders.add(order);
+                
+                android.util.Log.d("ListOrderFragment", "Order " + i + " parsed successfully - Customer: '" + order.getCustomerName() + "', Items: " + order.getItems().size());
             }
+        } else {
+            android.util.Log.w("ListOrderFragment", "No 'data' key found in response");
         }
         
+        android.util.Log.d("ListOrderFragment", "Total orders parsed: " + orders.size());
         return orders;
     }
 

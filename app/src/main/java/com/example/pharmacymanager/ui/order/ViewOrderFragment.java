@@ -93,33 +93,99 @@ public class ViewOrderFragment extends Fragment {
     }
 
     private void populateFields() {
-        // Set order ID
-        android.widget.TextView orderId = getView().findViewById(R.id.order_id);
-        orderId.setText("Order #" + order.getId());
+        try {
+            android.util.Log.d("ViewOrderFragment", "=== POPULATING FIELDS ===");
+            android.util.Log.d("ViewOrderFragment", "Order: " + order.toString());
+            
+            View view = getView();
+            if (view == null) {
+                android.util.Log.e("ViewOrderFragment", "View is null in populateFields!");
+                return;
+            }
+            
+            // Set order ID
+            android.widget.TextView orderId = view.findViewById(R.id.order_id);
+            if (orderId != null) {
+                orderId.setText("Order #" + order.getId());
+                android.util.Log.d("ViewOrderFragment", "Order ID set: " + order.getId());
+            } else {
+                android.util.Log.e("ViewOrderFragment", "order_id TextView not found!");
+            }
 
-        // Set customer name
-        android.widget.TextView customerName = getView().findViewById(R.id.order_customer_name);
-        String customerNameStr = order.getCustomerName();
-        if (customerNameStr != null && !customerNameStr.isEmpty()) {
-            customerName.setText(customerNameStr);
-        } else {
-            customerName.setText("Customer #" + order.getCustomerId());
+            // Set customer name
+            android.widget.TextView customerName = view.findViewById(R.id.order_customer_name);
+            if (customerName != null) {
+                String customerNameStr = order.getCustomerName();
+                if (customerNameStr != null && !customerNameStr.isEmpty()) {
+                    customerName.setText(customerNameStr);
+                    android.util.Log.d("ViewOrderFragment", "Customer name set: " + customerNameStr);
+                } else {
+                    customerName.setText("Customer #" + order.getCustomerId());
+                    android.util.Log.d("ViewOrderFragment", "Customer ID set: " + order.getCustomerId());
+                }
+            } else {
+                android.util.Log.e("ViewOrderFragment", "order_customer_name TextView not found!");
+            }
+
+            // Set order date
+            android.widget.TextView orderDate = view.findViewById(R.id.order_date);
+            if (orderDate != null) {
+                String formattedDate = formatDate(order.getOrderDate());
+                orderDate.setText(formattedDate);
+                android.util.Log.d("ViewOrderFragment", "Order date set: " + formattedDate);
+            } else {
+                android.util.Log.e("ViewOrderFragment", "order_date TextView not found!");
+            }
+
+            // Set order status
+            android.widget.TextView orderStatus = view.findViewById(R.id.order_status);
+            if (orderStatus != null) {
+                String status = order.getStatus();
+                if (status != null) {
+                    orderStatus.setText(status.toUpperCase());
+                    android.util.Log.d("ViewOrderFragment", "Order status set: " + status);
+                } else {
+                    orderStatus.setText("UNKNOWN");
+                    android.util.Log.w("ViewOrderFragment", "Order status is null!");
+                }
+            } else {
+                android.util.Log.e("ViewOrderFragment", "order_status TextView not found!");
+            }
+
+            // Set total amount
+            android.widget.TextView totalAmount = view.findViewById(R.id.order_total_amount);
+            if (totalAmount != null) {
+                totalAmount.setText(String.format("$%.2f", order.getTotalAmount()));
+                android.util.Log.d("ViewOrderFragment", "Total amount set: $" + order.getTotalAmount());
+            } else {
+                android.util.Log.e("ViewOrderFragment", "order_total_amount TextView not found!");
+            }
+
+            // Set order items
+            if (orderItemAdapter != null) {
+                java.util.List<OrderItem> items = order.getItems();
+                android.util.Log.d("ViewOrderFragment", "=== ORDER ITEMS DEBUG ===");
+                android.util.Log.d("ViewOrderFragment", "Order items from order: " + (items != null ? items.size() : "null"));
+                if (items != null) {
+                    for (int i = 0; i < items.size(); i++) {
+                        OrderItem item = items.get(i);
+                        android.util.Log.d("ViewOrderFragment", "Item " + i + ": " + item.toString());
+                    }
+                    orderItemAdapter.setOrderItems(items);
+                    android.util.Log.d("ViewOrderFragment", "Order items set: " + items.size() + " items");
+                } else {
+                    orderItemAdapter.setOrderItems(new java.util.ArrayList<>());
+                    android.util.Log.w("ViewOrderFragment", "Order items is null, setting empty list");
+                }
+            } else {
+                android.util.Log.e("ViewOrderFragment", "OrderItemAdapter is null!");
+            }
+            
+            android.util.Log.d("ViewOrderFragment", "Fields populated successfully");
+        } catch (Exception e) {
+            android.util.Log.e("ViewOrderFragment", "Error populating fields: " + e.getMessage(), e);
+            Toast.makeText(requireContext(), "Error loading order details: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-        // Set order date
-        android.widget.TextView orderDate = getView().findViewById(R.id.order_date);
-        orderDate.setText(formatDate(order.getOrderDate()));
-
-        // Set order status
-        android.widget.TextView orderStatus = getView().findViewById(R.id.order_status);
-        orderStatus.setText(order.getStatus().toUpperCase());
-
-        // Set total amount
-        android.widget.TextView totalAmount = getView().findViewById(R.id.order_total_amount);
-        totalAmount.setText(String.format("$%.2f", order.getTotalAmount()));
-
-        // Set order items
-        orderItemAdapter.setOrderItems(order.getItems());
     }
 
     private String formatDate(String dateString) {
@@ -196,8 +262,12 @@ public class ViewOrderFragment extends Fragment {
         }
 
         public void setOrderItems(java.util.List<OrderItem> orderItems) {
+            android.util.Log.d("ViewOrderFragment", "=== SET ORDER ITEMS ===");
+            android.util.Log.d("ViewOrderFragment", "Received order items: " + (orderItems != null ? orderItems.size() : "null"));
             this.orderItems = orderItems != null ? orderItems : new java.util.ArrayList<>();
+            android.util.Log.d("ViewOrderFragment", "Order items set in adapter: " + this.orderItems.size());
             notifyDataSetChanged();
+            android.util.Log.d("ViewOrderFragment", "notifyDataSetChanged() called");
         }
 
         @NonNull
@@ -210,7 +280,10 @@ public class ViewOrderFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull OrderItemViewHolder holder, int position) {
+            android.util.Log.d("ViewOrderFragment", "=== BIND VIEW HOLDER ===");
+            android.util.Log.d("ViewOrderFragment", "Position: " + position + ", Order items size: " + orderItems.size());
             OrderItem item = orderItems.get(position);
+            android.util.Log.d("ViewOrderFragment", "Binding item: " + item.toString());
             holder.bind(item);
         }
 
@@ -234,16 +307,32 @@ public class ViewOrderFragment extends Fragment {
             }
 
             public void bind(OrderItem item) {
-                String productName = item.getProductName();
-                if (productName != null && !productName.isEmpty()) {
-                    tvProductName.setText(productName);
-                } else {
-                    tvProductName.setText("Product " + item.getProductId());
+                try {
+                    android.util.Log.d("ViewOrderFragment", "=== BINDING ORDER ITEM ===");
+                    android.util.Log.d("ViewOrderFragment", "Item: " + item.toString());
+                    
+                    String productName = item.getProductName();
+                    if (productName != null && !productName.isEmpty()) {
+                        tvProductName.setText(productName);
+                        android.util.Log.d("ViewOrderFragment", "Product name set: " + productName);
+                    } else {
+                        tvProductName.setText("Product " + item.getProductId());
+                        android.util.Log.d("ViewOrderFragment", "Product ID set: " + item.getProductId());
+                    }
+                    
+                    tvProductId.setText("Product ID: " + item.getProductId());
+                    tvQuantity.setText("Qty: " + item.getQuantity());
+                    tvItemTotal.setText(String.format("$%.2f", item.getTotalPrice()));
+                    
+                    android.util.Log.d("ViewOrderFragment", "Order item bound successfully");
+                } catch (Exception e) {
+                    android.util.Log.e("ViewOrderFragment", "Error binding order item: " + e.getMessage(), e);
+                    // Set fallback values
+                    tvProductName.setText("Unknown Product");
+                    tvProductId.setText("Product ID: N/A");
+                    tvQuantity.setText("Qty: 0");
+                    tvItemTotal.setText("$0.00");
                 }
-                
-                tvProductId.setText("Product ID: " + item.getProductId());
-                tvQuantity.setText("Qty: " + item.getQuantity());
-                tvItemTotal.setText(String.format("$%.2f", item.getTotalPrice()));
             }
         }
     }

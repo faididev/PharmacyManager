@@ -77,10 +77,14 @@ public class ListCategoryFragment extends Fragment {
         // Setup click listeners
         setupClickListeners();
 
-        // Load categories
-        loadCategories();
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Load categories when fragment becomes visible
+        loadCategories();
     }
 
     private void setupRecyclerView() {

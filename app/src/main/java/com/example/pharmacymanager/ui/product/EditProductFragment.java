@@ -368,17 +368,8 @@ public class EditProductFragment extends Fragment {
                 
                 Toast.makeText(requireContext(), "Product updated successfully!", Toast.LENGTH_SHORT).show();
                 
-                // Navigate back and update the specific product in the list
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                    // Update the specific product in the list
-                    ListProductFragment listFragment = (ListProductFragment) getActivity()
-                            .getSupportFragmentManager()
-                            .findFragmentById(R.id.fragement_container);
-                    if (listFragment != null) {
-                        listFragment.updateProductInList(product);
-                    }
-                }
+                // Navigate back to list product page
+                navigateToListProduct();
             }
 
             @Override
@@ -407,20 +398,8 @@ public class EditProductFragment extends Fragment {
                             
                             Toast.makeText(requireContext(), "Product deleted successfully!", Toast.LENGTH_SHORT).show();
                             
-                            // Navigate back and remove the product from the list
-                            if (getActivity() != null) {
-                                getActivity().onBackPressed();
-                                // Remove the product from the list
-                                ListProductFragment listFragment = (ListProductFragment) getActivity()
-                                        .getSupportFragmentManager()
-                                        .findFragmentById(R.id.fragement_container);
-                                if (listFragment != null) {
-                                    listFragment.deleteProduct(new Product(productUuid, productName, "", 
-                                            productDescription, productQuantity, productTotal, 
-                                            productManufactureDate, productExpiryDate, productCategoryId, 
-                                            productPrice, null, null));
-                                }
-                            }
+                            // Navigate back to list product page
+                            navigateToListProduct();
                         }
 
                         @Override
@@ -558,5 +537,18 @@ public class EditProductFragment extends Fragment {
         }
 
         return isValid;
+    }
+
+    private void navigateToListProduct() {
+        if (getActivity() != null) {
+            // Create a new instance of ListProductFragment
+            ListProductFragment listFragment = new ListProductFragment();
+            
+            // Replace current fragment with list fragment
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_container, listFragment)
+                    .commit();
+        }
     }
 }

@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
@@ -56,26 +55,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-
-                Pair[] pairs = new Pair[7];
-
-                pairs[0] = new Pair<View,String>(image,"logo_image");
-                pairs[1] = new Pair<View,String>(logoText,"logo_text");
-                pairs[2] = new Pair<View,String>(sloganText,"logo_desc");
-                pairs[3] = new Pair<View,String>(username,"logo_user");
-                pairs[4] = new Pair<View,String>(password,"logo_password");
-                pairs[5] = new Pair<View,String>(login_btn,"buttonlogin_trans");
-                pairs[6] = new Pair<View,String>(callSignUp,"signin_signup_trans");
-
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this, pairs);
-                startActivity(intent, options.toBundle());
+                startActivity(intent);
             }
         });
     }
 
 
     public void loginUser(View view){
-        if(!validateEmailOnly() | !validatePassword()){
+        if(!validateEmailOnly() || !validatePassword()){
             return;
         }
 
