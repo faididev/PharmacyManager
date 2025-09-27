@@ -27,13 +27,12 @@ public class Category {
         try {
             JSONObject categoryData;
             JSONObject attributes;
-            
-            // Check if this is a single category response (has "data" wrapper)
+
             if (json.has("data")) {
                 categoryData = json.getJSONObject("data");
                 android.util.Log.d("Category", "Single category response detected");
             } else {
-                // This is a direct category object (from list response)
+                // from list response
                 categoryData = json;
                 android.util.Log.d("Category", "Direct category object detected");
             }
@@ -159,7 +158,6 @@ public class Category {
     // Test method to verify parsing with sample data
     public static void testParsing() {
         try {
-            // Test list response format (direct category object)
             String listResponseJson = "{\n" +
                 "  \"type\": \"category\",\n" +
                 "  \"id\": 1,\n" +

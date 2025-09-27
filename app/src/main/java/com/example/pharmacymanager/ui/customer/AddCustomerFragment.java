@@ -123,8 +123,6 @@ public class AddCustomerFragment extends Fragment {
 
         int userId = sessionManager.getUserId();
         if (userId == -1) {
-            // For testing purposes, use a default user ID
-            // In production, this should redirect to login
             userId = 1; // Default user ID for testing
             Log.w("AddCustomerFragment", "No user ID found, using default user ID: " + userId);
         }

@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 public class OrderItem implements Serializable {
     private int productId;
-    private String productUuid; // For products with UUID
+    private String productUuid;
     private int quantity;
     private double price;
-    private String productName; // For display purposes
+    private String productName;
 
     public OrderItem() {}
 

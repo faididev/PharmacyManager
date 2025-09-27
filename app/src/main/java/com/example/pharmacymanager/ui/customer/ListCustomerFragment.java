@@ -85,7 +85,6 @@ public class ListCustomerFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-        // Set click listener for customer items
         adapter.setOnCustomerClickListener(new CustomerAdapter.OnCustomerClickListener() {
             @Override
             public void onCustomerClick(Customer customer) {
@@ -99,7 +98,6 @@ public class ListCustomerFragment extends Fragment {
 
             @Override
             public void onCustomerLongClick(Customer customer) {
-                // Handle long click (e.g., show context menu)
                 Toast.makeText(requireContext(), "Long clicked: " + customer.getName(), Toast.LENGTH_SHORT).show();
             }
 

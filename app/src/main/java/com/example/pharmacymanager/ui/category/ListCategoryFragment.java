@@ -92,11 +92,9 @@ public class ListCategoryFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-        // Set click listener for category items
         adapter.setOnCategoryClickListener(new CategoryAdapter.OnCategoryClickListener() {
             @Override
             public void onCategoryClick(Category category) {
-                // Handle category click (e.g., show details or edit)
                 Toast.makeText(requireContext(), "Clicked: " + category.getName(), Toast.LENGTH_SHORT).show();
             }
 
@@ -129,7 +127,6 @@ public class ListCategoryFragment extends Fragment {
                     .commit();
         });
 
-        // Swipe to refresh (disabled for now)
         // swipeRefreshLayout.setOnRefreshListener(this::loadCategories);
     }
 
@@ -180,7 +177,6 @@ public class ListCategoryFragment extends Fragment {
             JSONArray dataArray = response.getJSONArray("data");
             android.util.Log.d("ListCategoryFragment", "Found " + dataArray.length() + " categories in response");
             
-            // Log the structure of the first few categories for debugging
             for (int debugIndex = 0; debugIndex < Math.min(3, dataArray.length()); debugIndex++) {
                 try {
                     JSONObject debugJson = dataArray.getJSONObject(debugIndex);
@@ -199,7 +195,6 @@ public class ListCategoryFragment extends Fragment {
                     android.util.Log.d("ListCategoryFragment", "Successfully parsed category: " + category.getName());
                 } catch (Exception e) {
                     android.util.Log.e("ListCategoryFragment", "Error parsing category " + i + ": " + e.getMessage(), e);
-                    // Continue with next category instead of failing completely
                 }
             }
         } else {
@@ -222,12 +217,10 @@ public class ListCategoryFragment extends Fragment {
         progressBar.setVisibility(View.GONE);
     }
 
-    // Method to refresh the list (can be called from AddCategoryFragment)
     public void refreshCategories() {
         loadCategories();
     }
 
-    // Method to update a specific category in the list
     public void updateCategoryInList(Category updatedCategory) {
         adapter.updateCategory(updatedCategory);
     }

@@ -29,7 +29,6 @@ public class EditCategoryFragment extends Fragment {
     private CategoryRepository categoryRepository;
 
     public EditCategoryFragment() {
-        // Required empty public constructor
     }
 
     public static EditCategoryFragment newInstance(Category category) {

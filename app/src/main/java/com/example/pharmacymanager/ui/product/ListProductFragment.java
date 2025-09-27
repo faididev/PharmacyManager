@@ -98,11 +98,10 @@ public class ListProductFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-        // Set click listener for product items
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Product product) {
-                // Navigate to view product fragment
+
                 ViewProductFragment viewFragment = ViewProductFragment.newInstance(product);
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -124,14 +123,12 @@ public class ListProductFragment extends Fragment {
 
             @Override
             public void onProductDeleteClick(Product product) {
-                // Handle delete button click
                 showDeleteConfirmationDialog(product);
             }
         });
     }
 
     private void setupClickListeners() {
-        // Floating action button to add new product
         fabAddProduct.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
@@ -203,8 +200,7 @@ public class ListProductFragment extends Fragment {
         if (response.has("data")) {
             JSONArray dataArray = response.getJSONArray("data");
             android.util.Log.d("ListProductFragment", "Found " + dataArray.length() + " products in response");
-            
-            // Log the structure of the first few products for debugging
+
             for (int debugIndex = 0; debugIndex < Math.min(3, dataArray.length()); debugIndex++) {
                 try {
                     JSONObject debugJson = dataArray.getJSONObject(debugIndex);
@@ -223,7 +219,6 @@ public class ListProductFragment extends Fragment {
                     android.util.Log.d("ListProductFragment", "Successfully parsed product: " + product.getName());
                 } catch (Exception e) {
                     android.util.Log.e("ListProductFragment", "Error parsing product " + i + ": " + e.getMessage(), e);
-                    // Continue with next product instead of failing completely
                 }
             }
         } else {
@@ -331,12 +326,10 @@ public class ListProductFragment extends Fragment {
         sortButton.setText(buttonText);
     }
 
-    // Method to refresh the list (can be called from AddProductFragment)
     public void refreshProducts() {
         loadProducts();
     }
 
-    // Method to update a specific product in the list
     public void updateProductInList(Product updatedProduct) {
         adapter.updateProduct(updatedProduct);
     }

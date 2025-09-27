@@ -214,8 +214,6 @@ public class OrderRepository {
                 null,
                 response -> {
                     Log.d("OrderRepository", "Delete order response=" + response.toString());
-                    // For delete operations, we might not get an order object back
-                    // Create a dummy order with the ID to indicate successful deletion
                     Order deletedOrder = new Order();
                     deletedOrder.setId(orderId);
                     callback.onSuccess(deletedOrder);

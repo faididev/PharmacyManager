@@ -150,8 +150,6 @@ public class EditCustomerFragment extends Fragment {
 
         int userId = sessionManager.getUserId();
         if (userId == -1) {
-            // For testing purposes, use a default user ID
-            // In production, this should redirect to login
             userId = 1; // Default user ID for testing
             android.util.Log.w("EditCustomerFragment", "No user ID found, using default user ID: " + userId);
         }
@@ -195,7 +193,6 @@ public class EditCustomerFragment extends Fragment {
     }
 
     private void deleteCustomer() {
-        // Disable button to prevent multiple submissions
         deleteCustomerBtn.setEnabled(false);
         deleteCustomerBtn.setText("Deleting...");
 

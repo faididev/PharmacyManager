@@ -38,15 +38,13 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    // Parse from API response (handles both list and single product responses)
     public static Product fromJson(JSONObject json) throws JSONException {
         android.util.Log.d("Product", "Parsing JSON: " + json.toString());
         
         try {
             JSONObject productData;
             JSONObject attributes;
-            
-            // Check if this is a single product response (has "data" wrapper)
+
             if (json.has("data")) {
                 productData = json.getJSONObject("data");
                 android.util.Log.d("Product", "Single product response detected");
@@ -222,8 +220,7 @@ public class Product {
     public String toString() {
         return name;
     }
-    
-    // Alternative parsing method with more defensive approach
+
     public static Product fromJsonSafe(JSONObject json) {
         try {
             return fromJson(json);

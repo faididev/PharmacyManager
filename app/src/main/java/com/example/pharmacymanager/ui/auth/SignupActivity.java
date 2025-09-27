@@ -86,8 +86,7 @@ public class SignupActivity extends AppCompatActivity {
 
         // Show loading state
         showLoading(true);
-        
-        // Use the simplified registration with just name, email, password
+
         new com.example.pharmacymanager.data.repositories.AuthRepository(this)
                 .register(nameVal, emailVal, pass, new com.example.pharmacymanager.data.repositories.AuthRepository.AuthCallback() {
                     @Override

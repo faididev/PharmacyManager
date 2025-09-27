@@ -90,7 +90,6 @@ public class AddProductFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Adjust window to allow scrolling when keyboard appears
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
@@ -99,13 +98,11 @@ public class AddProductFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        // Reset window adjustment
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
     }
 
-    // Method to scroll to a specific view
     private void scrollToView(View view) {
         if (scrollView != null && view != null) {
             scrollView.post(() -> {
@@ -113,7 +110,7 @@ public class AddProductFragment extends Fragment {
                 view.getLocationOnScreen(location);
                 int viewTop = location[1];
                 int scrollViewTop = scrollView.getTop();
-                int scrollY = viewTop - scrollViewTop - 200; // Add some padding
+                int scrollY = viewTop - scrollViewTop - 200;
                 scrollView.smoothScrollTo(0, Math.max(0, scrollY));
             });
         }
@@ -289,14 +286,12 @@ public class AddProductFragment extends Fragment {
                 createButton.setText("Create Product");
                 
                 Toast.makeText(requireContext(), "Product created successfully!", Toast.LENGTH_SHORT).show();
-                
-                // Navigate back to list product page and refresh
+
                 navigateToListProduct();
             }
 
             @Override
             public void onError(String message) {
-                // Enhanced error logging
                 android.util.Log.e("AddProductFragment", "=== PRODUCT CREATION ERROR ===");
                 android.util.Log.e("AddProductFragment", "Error message: " + message);
                 android.util.Log.e("AddProductFragment", "Product name: " + name);
@@ -311,8 +306,7 @@ public class AddProductFragment extends Fragment {
                 
                 createButton.setEnabled(true);
                 createButton.setText("Create Product");
-                
-                // Check if it's an authentication error
+
                 if (message.contains("401") || message.contains("Unauthorized") || message.contains("Token")) {
                     android.util.Log.e("AddProductFragment", "Authentication error detected");
                     Toast.makeText(requireContext(), "Authentication error. Please login again.", Toast.LENGTH_LONG).show();

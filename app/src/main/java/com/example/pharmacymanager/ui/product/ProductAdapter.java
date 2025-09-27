@@ -97,7 +97,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 break;
             case NONE:
             default:
-                // No sorting
                 break;
         }
         
@@ -176,12 +175,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             btnEdit = itemView.findViewById(R.id.btn_edit);
             btnDelete = itemView.findViewById(R.id.btn_delete);
 
-            // Set click listeners for action buttons
             btnEdit.setOnClickListener(v -> {
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onProductLongClick(filteredProducts.get(position)); // Use edit functionality
+                        listener.onProductLongClick(filteredProducts.get(position));
                     }
                 }
             });
@@ -209,7 +207,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        // Provide visual feedback
+
                         v.setAlpha(0.7f);
                         v.postDelayed(() -> v.setAlpha(1.0f), 150);
                         

@@ -138,7 +138,7 @@ public class ViewCustomerFragment extends Fragment {
 
     private void setupClickListeners() {
         btnEditCustomer.setOnClickListener(v -> {
-            // Navigate to EditCustomerFragment
+
             if (getActivity() != null) {
                 EditCustomerFragment editFragment = EditCustomerFragment.newInstance(customer);
                 getActivity().getSupportFragmentManager().beginTransaction()

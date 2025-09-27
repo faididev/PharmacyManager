@@ -36,13 +36,12 @@ public class Customer implements Serializable {
         
         try {
             JSONObject customerData;
-            
-            // Check if this is a single customer response (has "data" wrapper)
+
             if (json.has("data")) {
                 customerData = json.getJSONObject("data");
                 android.util.Log.d("Customer", "Single customer response detected");
             } else {
-                // This is a direct customer object (from list response)
+
                 customerData = json;
                 android.util.Log.d("Customer", "Direct customer object detected");
             }

@@ -82,7 +82,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadStaticData() {
-        // Set static statistics data
         totalRevenue.setText("$12,450.00");
         totalOrders.setText("156");
         totalProducts.setText("89");

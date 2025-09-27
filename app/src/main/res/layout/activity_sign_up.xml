@@ -72,7 +72,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full Name"
+                    android:hint="@string/full_name"
                     android:transitionName="@string/logo_user"
                     app:boxStrokeColor="@color/input_focused_border"
                     app:hintTextColor="@color/input_hint"

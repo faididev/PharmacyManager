@@ -106,7 +106,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onCategoryLongClick(categories.get(position)); // Use edit functionality
+                        listener.onCategoryLongClick(categories.get(position));
                     }
                 }
             });
@@ -134,7 +134,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        // Provide visual feedback
                         v.setAlpha(0.7f);
                         v.postDelayed(() -> v.setAlpha(1.0f), 150);
                         
@@ -158,7 +157,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 categoryDescription.setText(description);
             }
             
-            // Format date (remove time part)
+            // Format date
             if (category.getCreatedAt() != null) {
                 String date = category.getCreatedAt().split("T")[0];
                 categoryDate.setText("Created: " + date);

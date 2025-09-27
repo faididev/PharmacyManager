@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    // Method to navigate to AddCategoryFragment (can be called from other fragments)
+    // Method to navigate to AddCategoryFragment
     public void navigateToAddCategory() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragement_container, new AddCategoryFragment())
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
-    // Method to navigate to AddProductFragment (can be called from other fragments)
+    // Method to navigate to AddProductFragment
     public void navigateToAddProduct() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragement_container, new AddProductFragment())
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
-    // Method to navigate to AddCustomerFragment (can be called from other fragments)
+    // Method to navigate to AddCustomerFragment
     public void navigateToAddCustomer() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragement_container, new AddCustomerFragment())
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
-    // Method to navigate to AddOrderFragment (can be called from other fragments)
+    // Method to navigate to AddOrderFragment
     public void navigateToAddOrder() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragement_container, AddOrderFragment.newInstance())

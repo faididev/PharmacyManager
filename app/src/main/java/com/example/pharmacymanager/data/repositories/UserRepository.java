@@ -62,13 +62,11 @@ public class UserRepository {
         Log.d("UserRepository", "Parsing user response: " + response.toString());
         
         JSONObject userData;
-        
-        // Check if this is a single user response (has "data" wrapper)
+
         if (response.has("data")) {
             userData = response.getJSONObject("data");
             Log.d("UserRepository", "Single user response detected");
         } else {
-            // This is a direct user object
             userData = response;
             Log.d("UserRepository", "Direct user object detected");
         }
@@ -83,7 +81,7 @@ public class UserRepository {
         String createdAt;
         String updatedAt;
         
-        // Format 1: With attributes wrapper
+        // Format 1 With attributes wrapper
         if (userData.has("attributes")) {
             Log.d("UserRepository", "Using attributes format");
             JSONObject attributes = userData.getJSONObject("attributes");
@@ -97,7 +95,7 @@ public class UserRepository {
             createdAt = attributes.optString("createdAt", "");
             updatedAt = attributes.optString("updatedAt", "");
         }
-        // Format 2: Direct fields (no attributes wrapper)
+        // Format 2 Direct fields (no attributes wrapper)
         else {
             Log.d("UserRepository", "Using direct fields format");
             

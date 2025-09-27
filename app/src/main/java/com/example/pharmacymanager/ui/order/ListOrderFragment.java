@@ -98,8 +98,7 @@ public class ListOrderFragment extends Fragment {
                         Toast.makeText(requireContext(), "Error: Order data is invalid", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    
-                    // Navigate to ViewOrderFragment
+
                     ViewOrderFragment viewFragment = ViewOrderFragment.newInstance(order);
                     if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
                         getActivity().getSupportFragmentManager().beginTransaction()

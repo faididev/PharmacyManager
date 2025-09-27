@@ -59,14 +59,13 @@ public class AuthRepository {
     public void registerWithCustomer(String username, String email, String password, String phone, String address, int loyaltyPoints, AuthCallback callback) {
         Log.d("AuthRepository", "Starting two-step registration: User -> Customer");
         
-        // Step 1: Create User
+        // Create User
         UserRepository userRepository = new UserRepository(appContext);
         userRepository.createUser(username, email, password, phone, address, new UserRepository.UserCallback() {
             @Override
             public void onSuccess(User user) {
                 Log.d("AuthRepository", "User created successfully with ID: " + user.getId());
-                
-                // Step 2: Create Customer with the user ID
+
                 createCustomerFromUser(user, password, loyaltyPoints, callback);
             }
 
@@ -148,8 +147,7 @@ public class AuthRepository {
 
     public void logout(AuthCallback callback) {
         Log.d("AuthRepository", "Starting logout process");
-        
-        // Get the current token
+
         String token = sessionManager.getToken();
         if (token == null || token.isEmpty()) {
             Log.w("AuthRepository", "No token found, clearing local session only");
@@ -166,7 +164,7 @@ public class AuthRepository {
                 null,
                 response -> {
                     Log.d("AuthRepository", "Logout API response=" + response.toString());
-                    // Clear local session regardless of API response
+
                     sessionManager.clear();
                     callback.onSuccess();
                 },
@@ -178,8 +176,6 @@ public class AuthRepository {
                 }
         ));
     }
-
-    // Registration flow removed to simplify project
 
     private void handleAuthResponse(JSONObject response, AuthCallback callback) {
         try {

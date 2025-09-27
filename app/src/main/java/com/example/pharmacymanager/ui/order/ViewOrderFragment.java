@@ -53,7 +53,6 @@ public class ViewOrderFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_view_order, container, false);
 
-        // Get order from arguments
         if (getArguments() != null) {
             order = (Order) getArguments().getSerializable("order");
         }
@@ -201,14 +200,12 @@ public class ViewOrderFragment extends Fragment {
             Date date = inputFormat.parse(dateString);
             return outputFormat.format(date);
         } catch (Exception e) {
-            // If parsing fails, return the original string
             return dateString;
         }
     }
 
     private void setupClickListeners() {
         btnEditOrder.setOnClickListener(v -> {
-            // Navigate to EditOrderFragment (not implemented yet)
             Toast.makeText(requireContext(), "Edit order functionality coming soon", Toast.LENGTH_SHORT).show();
         });
 
@@ -225,7 +222,6 @@ public class ViewOrderFragment extends Fragment {
     }
 
     private void deleteOrder() {
-        // Disable button to prevent multiple submissions
         btnDeleteOrder.setEnabled(false);
         btnDeleteOrder.setText("Deleting...");
 
@@ -253,7 +249,7 @@ public class ViewOrderFragment extends Fragment {
         });
     }
 
-    // Simple adapter for order items
+    // adapter for order items
     private static class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.OrderItemViewHolder> {
         private java.util.List<OrderItem> orderItems;
 

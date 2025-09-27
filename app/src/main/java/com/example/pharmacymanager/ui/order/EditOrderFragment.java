@@ -41,7 +41,6 @@ public class EditOrderFragment extends Fragment {
     
     private Button updateOrderBtn;
     private Button btnBack;
-    // btnAddItem removed - using inline product selection now
     private Button btnRefreshCustomers;
     
     private LinearLayout orderItemsContainer;
@@ -143,8 +142,7 @@ public class EditOrderFragment extends Fragment {
                     }
                 });
             }
-            // btnAddItem click listener removed - using inline product selection now
-            
+
             if (btnRefreshCustomers != null) {
                 btnRefreshCustomers.setOnClickListener(v -> {
                     Toast.makeText(requireContext(), "Refreshing customers...", Toast.LENGTH_SHORT).show();
@@ -257,8 +255,6 @@ public class EditOrderFragment extends Fragment {
             orderItemsContainer.addView(itemView);
         }
     }
-
-    // showProductSelectionDialog method removed - using inline product selection now
 
     private void addOrderItem(Product product, int quantity) {
         try {
@@ -374,8 +370,7 @@ public class EditOrderFragment extends Fragment {
             String orderDate = java.text.DateFormat.getDateInstance().format(new java.util.Date());
             
             Log.d("EditOrderFragment", "Updating order - ID: " + order.getId() + ", Customer ID: " + selectedCustomerId + ", Status: " + status + ", Items: " + orderItems.size());
-            
-            // Disable button to prevent multiple submissions
+
             updateOrderBtn.setEnabled(false);
             updateOrderBtn.setText("Updating...");
             

@@ -139,7 +139,6 @@ public class EditProductFragment extends Fragment {
             }
         });
 
-        // Set up focus listeners for auto-scrolling
         setupFocusListeners();
 
         // Set up date picker listeners
@@ -151,7 +150,7 @@ public class EditProductFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Adjust window to allow scrolling when keyboard appears
+
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
@@ -160,13 +159,12 @@ public class EditProductFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        // Reset window adjustment
+
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
     }
 
-    // Method to scroll to a specific view
     private void scrollToView(View view) {
         if (scrollView != null && view != null) {
             scrollView.post(() -> {
@@ -174,7 +172,7 @@ public class EditProductFragment extends Fragment {
                 view.getLocationOnScreen(location);
                 int viewTop = location[1];
                 int scrollViewTop = scrollView.getTop();
-                int scrollY = viewTop - scrollViewTop - 200; // Add some padding
+                int scrollY = viewTop - scrollViewTop - 200;
                 scrollView.smoothScrollTo(0, Math.max(0, scrollY));
             });
         }
@@ -330,8 +328,7 @@ public class EditProductFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), 
                 android.R.layout.simple_dropdown_item_1line, categoryNames);
         categoryDropdown.setAdapter(adapter);
-        
-        // Set the selected category
+
         if (selectedIndex < categoryNames.size()) {
             categoryDropdown.setText(categoryNames.get(selectedIndex), false);
         }
@@ -367,8 +364,7 @@ public class EditProductFragment extends Fragment {
                 updateButton.setText("Update Product");
                 
                 Toast.makeText(requireContext(), "Product updated successfully!", Toast.LENGTH_SHORT).show();
-                
-                // Navigate back to list product page
+
                 navigateToListProduct();
             }
 
@@ -397,8 +393,7 @@ public class EditProductFragment extends Fragment {
                             deleteButton.setText("Delete Product");
                             
                             Toast.makeText(requireContext(), "Product deleted successfully!", Toast.LENGTH_SHORT).show();
-                            
-                            // Navigate back to list product page
+
                             navigateToListProduct();
                         }
 
@@ -541,10 +536,8 @@ public class EditProductFragment extends Fragment {
 
     private void navigateToListProduct() {
         if (getActivity() != null) {
-            // Create a new instance of ListProductFragment
             ListProductFragment listFragment = new ListProductFragment();
-            
-            // Replace current fragment with list fragment
+
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragement_container, listFragment)

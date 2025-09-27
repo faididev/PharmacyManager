@@ -72,7 +72,6 @@ public class CustomerRepository {
     }
 
     public void getCustomers(CustomerListCallback callback) {
-        // Try to include user data in the request
         String url = "customers?include=user";
         Log.d("CustomerRepository", "Fetching customers from: " + url);
         
@@ -87,7 +86,7 @@ public class CustomerRepository {
                 },
                 error -> {
                     Log.w("CustomerRepository", "Get customers with include failed, trying without include: " + error.getMessage());
-                    // Fallback to original endpoint without include
+
                     getCustomersWithoutInclude(callback);
                 }
         );
@@ -196,8 +195,7 @@ public class CustomerRepository {
                 null,
                 response -> {
                     Log.d("CustomerRepository", "Delete customer response=" + response.toString());
-                    // For delete operations, we might not get a customer object back
-                    // Create a dummy customer with the ID to indicate successful deletion
+
                     Customer deletedCustomer = new Customer();
                     deletedCustomer.setId(customerId);
                     callback.onSuccess(deletedCustomer);

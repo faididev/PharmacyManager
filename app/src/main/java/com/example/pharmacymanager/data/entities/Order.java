@@ -41,13 +41,11 @@ public class Order implements Serializable {
         
         try {
             JSONObject orderData;
-            
-            // Check if this is a single order response (has "data" wrapper)
+
             if (json.has("data")) {
                 orderData = json.getJSONObject("data");
                 android.util.Log.d("Order", "Single order response detected");
             } else {
-                // This is a direct order object (from list response)
                 orderData = json;
                 android.util.Log.d("Order", "Direct order object detected");
             }

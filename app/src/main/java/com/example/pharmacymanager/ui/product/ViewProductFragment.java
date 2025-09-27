@@ -149,7 +149,7 @@ public class ViewProductFragment extends Fragment {
             productExpiryDateText.setText("N/A");
         }
 
-        // Set category (for now, just show the ID)
+        // Set category
         productCategoryText.setText("Category ID: " + productCategoryId);
     }
 

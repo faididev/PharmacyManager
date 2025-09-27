@@ -88,7 +88,6 @@ public class AddCategoryFragment extends Fragment {
                 // Check if it's an authentication error
                 if (message.contains("401") || message.contains("Unauthorized") || message.contains("Token")) {
                     Toast.makeText(requireContext(), "Authentication error. Please login again.", Toast.LENGTH_LONG).show();
-                    // Don't redirect automatically, let user handle it
                 } else {
                     Toast.makeText(requireContext(), "Error: " + message, Toast.LENGTH_LONG).show();
                 }

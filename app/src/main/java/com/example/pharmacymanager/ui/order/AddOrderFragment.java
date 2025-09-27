@@ -311,8 +311,7 @@ public class AddOrderFragment extends Fragment {
                 itemTotal.setText("$" + String.format("%.2f", orderItem.getTotalPrice()));
                 updateOrderTotal();
             });
-            
-            // Add to container
+
             orderItemsContainer.addView(itemView);
             Log.d("AddOrderFragment", "Item view added to container");
             
@@ -450,7 +449,7 @@ public class AddOrderFragment extends Fragment {
                         if (products.isEmpty()) {
                             Toast.makeText(requireContext(), "No products found", Toast.LENGTH_SHORT).show();
                         } else {
-                            // Log first few products for debugging
+
                             for (int i = 0; i < Math.min(3, products.size()); i++) {
                                 Product product = products.get(i);
                                 Log.d("AddOrderFragment", "Product " + i + ": " + product.getName() + 
@@ -500,7 +499,6 @@ public class AddOrderFragment extends Fragment {
                                 org.json.JSONArray dataArray = response.getJSONArray("data");
                                 Log.d("AddOrderFragment", "Data is JSONArray with " + dataArray.length() + " items");
                                 
-                                // Log first item structure
                                 if (dataArray.length() > 0) {
                                     Log.d("AddOrderFragment", "First customer item: " + dataArray.getJSONObject(0).toString());
                                 }
@@ -517,7 +515,6 @@ public class AddOrderFragment extends Fragment {
                         if (customers.isEmpty()) {
                             Toast.makeText(requireContext(), "No customers found", Toast.LENGTH_SHORT).show();
                         } else {
-                            // Log parsed customer details
                             for (int i = 0; i < customers.size(); i++) {
                                 Customer customer = customers.get(i);
                                 Log.d("AddOrderFragment", "Customer " + i + ": ID=" + customer.getId() + 
@@ -601,8 +598,8 @@ public class AddOrderFragment extends Fragment {
         }
         
         List<String> customerNames = new ArrayList<>();
-        customerNames.add("Select Customer"); // Default option
-        
+        customerNames.add("Select Customer");
+
         for (Customer customer : customers) {
             customerNames.add(customer.getName());
         }
@@ -623,7 +620,7 @@ public class AddOrderFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(adapter);
         
-        // Set default to "pending"
+        // pending is the default option
         statusSpinner.setSelection(0);
     }
 }

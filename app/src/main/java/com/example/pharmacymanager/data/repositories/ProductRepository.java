@@ -180,8 +180,7 @@ public class ProductRepository {
 
     private void handleError(VolleyError error, ProductCallback callback) {
         String message = error.getMessage();
-        
-        // Enhanced error logging
+
         Log.e("ProductRepository", "=== VOLLEY ERROR DETAILS ===");
         Log.e("ProductRepository", "Error message: " + message);
         Log.e("ProductRepository", "Error class: " + error.getClass().getSimpleName());
