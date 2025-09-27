@@ -1,443 +1,348 @@
-# Pharmacy Manager System
+# Pharmacy Manager Android App
 
-A comprehensive pharmacy management system consisting of an Android mobile application and a Laravel REST API backend. This system provides complete inventory management, order processing, customer management, and user authentication for pharmacy operations.
+A comprehensive Android application for pharmacy management built with Java. This mobile app provides complete inventory management, order processing, customer management, and user authentication for pharmacy operations.
 
-## 🏗️ System Architecture
+## Project Presentation Details
 
-### Components
-- **Android App** (`PharmacyManager/`) - Native Android application built with Java
-- **Laravel API** (`pharmacy-manager-api/`) - RESTful API backend built with Laravel 12
-- **Database** - SQLite (default) with support for MySQL, PostgreSQL, and MariaDB
+This project was presented as a **Soutenance de projet de fin d'étude** (Final Year Project Defense) at:
+- **University:** Université Sidi Mohamed Ben Abdellah
+- **School:** École Nationale des Sciences Appliquées
 
-### Key Features
-- 🔐 **User Authentication** - Secure login/registration with Laravel Sanctum
-- 📦 **Product Management** - Complete inventory tracking with categories, SKUs, and expiry dates
-- 👥 **Customer Management** - Customer profiles with loyalty points system
-- 🛒 **Order Processing** - Full order lifecycle management with item tracking
-- 📊 **Real-time Updates** - Live data synchronization between app and API
-- 🔍 **Search & Filtering** - Advanced search capabilities across all entities
-- 📱 **Modern UI** - Material Design components with responsive layouts
+### Project Title
+**Creation de Gestion de Pharmacy Laravel API + Java Android App**
 
-## 📋 Prerequisites
+### Presented by
+- Yassine Faidi
+- Hamza Mekouar
 
-### For Android Development
+### Supervised by
+- Mr.S Jamal RIFFI
+- Mr.s LAKHRISSI YOUNES
+
+## Repository
+
+- **Android App**: [PharmacyManager](https://github.com/faididev/PharmacyManager)
+- **Backend API**: [pharmacy-manager-api](https://github.com/faididev/pharmacy-manager-api)
+
+## Features
+
+### Authentication System
+- **Secure Login/Logout** with token-based authentication
+- **User Registration** with form validation
+- **Session Management** with automatic token refresh
+- **Password Security** with proper validation
+
+### Product Management
+- **Product List** with search and filtering
+- **Add/Edit Products** with comprehensive forms
+- **Product Details** with full information display
+- **Category Management** for product organization
+- **Inventory Tracking** with quantity management
+- **Expiry Date Monitoring** for pharmaceutical products
+- **SKU Management** with auto-generation
+- **Price Management** with decimal precision
+
+### Order Management
+- **Order Creation** with multiple items
+- **Order List** with status filtering
+- **Order Details** with item breakdown
+- **Order Status Tracking** (pending, completed, cancelled)
+
+
+### Customer Management
+- **Customer List** with search functionality
+- **Add/Edit Customers** with contact information
+- **Customer Details** with order history
+- **Loyalty Points System** for customer retention
+
+### Category Management
+- **Category List** with organization
+- **Add/Edit Categories** with descriptions
+- **Product Association** for better organization
+
+### User Interface
+- **Material Design 3** components
+- **Responsive Layouts** for different screen sizes
+- **Dark/Light Theme** support
+- **Intuitive Navigation** with bottom navigation
+- **Real-time Data Updates** with pull-to-refresh
+- **Loading States** and error handling
+- **Form Validation** with user-friendly messages
+
+## Technology Stack
+
+- **Language**: Java
+- **Platform**: Android (API level 24+)
+- **UI Framework**: Android Views with Material Design
+- **Networking**: Volley for HTTP requests
+- **JSON Parsing**: Gson for data serialization
+- **Navigation**: Android Navigation Component
+- **Data Binding**: ViewBinding and DataBinding
+- **Architecture**: MVVM (Model-View-ViewModel)
+- **Build System**: Gradle with Kotlin DSL
+
+## Prerequisites
+
 - **Android Studio** (latest stable version)
 - **Java Development Kit (JDK) 11** or higher
 - **Android SDK** (API level 24+)
 - **Gradle** (included with Android Studio)
+- **Backend API** running (see [pharmacy-manager-api](https://github.com/faididev/pharmacy-manager-api))
 
-### For API Development
-- **PHP 8.2** or higher
-- **Composer** (PHP dependency manager)
-- **Node.js 18+** and **npm** (for frontend assets)
-- **Database** (SQLite, MySQL, PostgreSQL, or MariaDB)
-
-## 🚀 Quick Start
+## Installation
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone https://github.com/faididev/PharmacyManager.git
+cd PharmacyManager
 ```
 
-### 2. API Setup
+### 2. Open in Android Studio
+1. Launch Android Studio
+2. Select "Open an existing project"
+3. Navigate to the cloned directory
+4. Click "OK" to open the project
 
-#### Navigate to API directory
-```bash
-cd pharmacy-manager-api
-```
-
-#### Install PHP dependencies
-```bash
-composer install
-```
-
-#### Install Node.js dependencies
-```bash
-npm install
-```
-
-#### Environment Configuration
-```bash
-# Copy environment file
-cp .env.example .env
-
-# Generate application key
-php artisan key:generate
-```
-
-#### Database Setup
-```bash
-# Create database file (for SQLite)
-touch database/database.sqlite
-
-# Run migrations
-php artisan migrate
-
-# Seed database with sample data (optional)
-php artisan db:seed
-```
-
-#### Start the API server
-```bash
-# Development server
-php artisan serve
-
-# Or with queue processing and logging
-composer run dev
-```
-
-The API will be available at `http://localhost:8000`
-
-### 3. Android App Setup
-
-#### Navigate to Android project
-```bash
-cd ../PharmacyManager
-```
-
-#### Configure API Endpoint
+### 3. Configure API Endpoint
 Edit `app/src/main/java/com/example/pharmacymanager/data/remote/ApiConfig.java`:
 
 ```java
-public static final String BASE_URL = "http://YOUR_LOCAL_IP:8000/api/v1/";
+public static final String BASE_URL = "http://YOUR_API_IP:8000/api/v1/";
 ```
 
-Replace `YOUR_LOCAL_IP` with your computer's IP address (e.g., `192.168.1.100`).
+Replace `YOUR_API_IP` with your backend server's IP address.
 
-#### Build and Run
-1. Open the project in Android Studio
-2. Sync Gradle files
-3. Build and run on device/emulator
+### 4. Build and Run
+1. Sync Gradle files (Android Studio will prompt you)
+2. Connect an Android device or start an emulator
+3. Click the "Run" button or press `Shift + F10`
+4. The app will install and launch on your device
 
-## 🔧 Configuration
+## Project Structure
 
-### API Configuration
-
-#### Database Configuration
-The API supports multiple database systems. Configure in `.env`:
-
-```env
-# SQLite (default)
-DB_CONNECTION=sqlite
-DB_DATABASE=/path/to/database.sqlite
-
-# MySQL
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=pharmacy_manager
-DB_USERNAME=root
-DB_PASSWORD=your_password
-
-# PostgreSQL
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=pharmacy_manager
-DB_USERNAME=postgres
-DB_PASSWORD=your_password
-```
-
-#### CORS Configuration
-For development, ensure CORS is properly configured to allow requests from the Android app.
-
-### Android Configuration
-
-#### Network Security
-The app is configured to allow HTTP traffic for development. For production, update `network_security_config.xml` to enforce HTTPS.
-
-#### API Endpoint
-Update the `BASE_URL` in `ApiConfig.java` to match your API server address.
-
-## 📊 Database Schema
-
-### Core Tables
-
-#### Users
-- `id` - Primary key
-- `uuid` - Unique identifier
-- `name` - User's full name
-- `email` - Unique email address
-- `phone` - Contact number
-- `address` - Physical address
-- `password` - Hashed password
-- `email_verified_at` - Email verification timestamp
-- `last_login_at` - Last login timestamp
-- `created_at`, `updated_at` - Timestamps
-- `deleted_at` - Soft delete timestamp
-
-#### Categories
-- `id` - Primary key
-- `name` - Category name (indexed)
-- `description` - Optional description
-- `created_at`, `updated_at` - Timestamps
-
-#### Products
-- `id` - Primary key
-- `uuid` - Unique identifier
-- `sku` - Stock Keeping Unit (unique, indexed)
-- `name` - Product name (indexed)
-- `description` - Product description
-- `price` - Unit price (decimal 10,2)
-- `quantity` - Available quantity
-- `total` - Total value
-- `manufacture_date` - Manufacturing date
-- `expiry_date` - Expiration date
-- `category_id` - Foreign key to categories
-- `created_at`, `updated_at` - Timestamps
-- `deleted_at` - Soft delete timestamp
-
-#### Customers
-- `id` - Primary key
-- `user_id` - Foreign key to users
-- `loyalty_points` - Customer loyalty points
-- `created_at`, `updated_at` - Timestamps
-
-#### Orders
-- `id` - Primary key
-- `customer_id` - Foreign key to customers
-- `order_date` - Order placement date
-- `total_amount` - Total order value
-- `status` - Order status (pending, completed, cancelled)
-- `created_at`, `updated_at` - Timestamps
-
-#### Order Items
-- `id` - Primary key
-- `order_id` - Foreign key to orders
-- `product_id` - Foreign key to products
-- `quantity` - Item quantity
-- `price` - Item price at time of order
-- `created_at`, `updated_at` - Timestamps
-
-## 🔌 API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/register` - User registration
-- `GET /api/auth/user` - Get current user
-- `POST /api/auth/logout` - User logout
-
-### Products
-- `GET /api/v1/products` - List products (with pagination, search, filtering)
-- `POST /api/v1/products` - Create product
-- `GET /api/v1/products/{id}` - Get product details
-- `PUT /api/v1/products/{id}` - Update product
-- `DELETE /api/v1/products/{id}` - Delete product
-
-### Categories
-- `GET /api/v1/categories` - List categories
-- `POST /api/v1/categories` - Create category
-- `GET /api/v1/categories/{id}` - Get category details
-- `PUT /api/v1/categories/{id}` - Update category
-- `DELETE /api/v1/categories/{id}` - Delete category
-
-### Orders
-- `GET /api/v1/orders` - List orders (with filtering by status, customer, date)
-- `POST /api/v1/orders` - Create order
-- `GET /api/v1/orders/{id}` - Get order details
-- `PUT /api/v1/orders/{id}` - Update order
-- `DELETE /api/v1/orders/{id}` - Delete order
-
-### Customers
-- `GET /api/v1/customers` - List customers
-- `POST /api/v1/customers` - Create customer
-- `GET /api/v1/customers/{id}` - Get customer details
-- `PUT /api/v1/customers/{id}` - Update customer
-- `DELETE /api/v1/customers/{id}` - Delete customer
-- `GET /api/v1/customers/user/{userId}` - Get customers by user ID
-
-## 🛠️ Development
-
-### API Development
-
-#### Running Tests
-```bash
-# Run all tests
-php artisan test
-
-# Run specific test suite
-php artisan test --testsuite=Feature
-```
-
-#### Code Quality
-```bash
-# Run Laravel Pint (code formatting)
-./vendor/bin/pint
-
-# Run static analysis
-composer run-script static-analysis
-```
-
-#### Database Management
-```bash
-# Create new migration
-php artisan make:migration create_table_name
-
-# Rollback migrations
-php artisan migrate:rollback
-
-# Reset database
-php artisan migrate:fresh --seed
-```
-
-### Android Development
-
-#### Project Structure
 ```
 app/src/main/java/com/example/pharmacymanager/
 ├── data/
-│   ├── entities/          # Data models
+│   ├── entities/          # Data models (Product, Order, Customer, etc.)
 │   ├── local/            # Local storage (SessionManager)
 │   ├── remote/           # API client and configuration
 │   └── repositories/     # Data access layer
 └── ui/
     ├── auth/             # Authentication screens
+    │   ├── LoginActivity.java
+    │   └── SignupActivity.java
     ├── category/         # Category management
+    │   ├── AddCategoryFragment.java
+    │   ├── EditCategoryFragment.java
+    │   ├── ListCategoryFragment.java
+    │   └── CategoryAdapter.java
     ├── customer/         # Customer management
+    │   ├── AddCustomerFragment.java
+    │   ├── EditCustomerFragment.java
+    │   ├── ListCustomerFragment.java
+    │   ├── ViewCustomerFragment.java
+    │   └── CustomerAdapter.java
     ├── home/             # Dashboard
+    │   └── HomeFragment.java
     ├── order/            # Order management
+    │   ├── AddOrderFragment.java
+    │   ├── EditOrderFragment.java
+    │   ├── ListOrderFragment.java
+    │   ├── ViewOrderFragment.java
+    │   ├── OrderAdapter.java
+    │   ├── ProductSelectionDialog.java
+    │   └── QuantityInputDialog.java
     ├── product/          # Product management
-    ├── MainActivity.java # Main activity
+    │   ├── AddProductFragment.java
+    │   ├── EditProductFragment.java
+    │   ├── ListProductFragment.java
+    │   ├── ViewProductFragment.java
+    │   └── ProductAdapter.java
+    ├── MainActivity.java # Main activity with navigation
     └── SplashActivity.java # Splash screen
 ```
 
-#### Key Dependencies
-- **Volley** - HTTP networking
-- **Gson** - JSON parsing
-- **Material Design Components** - UI components
-- **Navigation Component** - Screen navigation
-- **ViewBinding** - Type-safe view references
-- **DataBinding** - Data binding support
+## Key Dependencies
 
-## 🚀 Deployment
+### Core Android Libraries
+- **AppCompat**: `androidx.appcompat:appcompat:1.7.1`
+- **Material Design**: `com.google.android.material:material:1.12.0`
+- **ConstraintLayout**: `androidx.constraintlayout:constraintlayout:2.2.1`
+- **Activity**: `androidx.activity:activity:1.10.1`
+- **Fragment**: `androidx.fragment:fragment:1.8.8`
 
-### API Deployment
+### Networking & Data
+- **Volley**: `com.android.volley:volley:1.2.1` - HTTP networking
+- **Gson**: `com.google.code.gson:gson:2.11.0` - JSON parsing
 
-#### Production Environment
-1. Set `APP_ENV=production` in `.env`
-2. Configure production database
-3. Set up web server (Apache/Nginx)
-4. Configure SSL certificates
-5. Set up process manager (Supervisor/PM2)
+### Architecture Components
+- **Lifecycle**: `androidx.lifecycle:lifecycle-viewmodel:2.9.2`
+- **LiveData**: `androidx.lifecycle:lifecycle-livedata:2.9.2`
+- **Navigation**: `androidx.navigation:navigation-fragment-ktx:2.9.2`
 
-#### Docker Deployment
-```bash
-# Build Docker image
-docker build -t pharmacy-manager-api .
+### UI Components
+- **SwipeRefreshLayout**: `androidx.swiperefreshlayout:swiperefreshlayout:1.1.0`
+- **ViewBinding**: Enabled in build.gradle
+- **DataBinding**: Enabled in build.gradle
 
-# Run container
-docker run -p 8000:8000 pharmacy-manager-api
+## Configuration
+
+### API Configuration
+The app connects to a Laravel REST API backend. Configure the API endpoint in `ApiConfig.java`:
+
+```java
+public static final String BASE_URL = "http://192.168.1.100:8000/api/v1/";
 ```
 
-### Android Deployment
+### Network Security
+The app is configured to allow HTTP traffic for development. For production:
+1. Update `network_security_config.xml` to enforce HTTPS
+2. Ensure your API server has SSL certificates
+3. Update the BASE_URL to use HTTPS
 
-#### Release Build
-1. Generate signed APK/AAB
-2. Configure ProGuard for code obfuscation
-3. Update API endpoint to production URL
-4. Test on various devices and screen sizes
+### Build Configuration
+- **Target SDK**: 36 (Android 14)
+- **Minimum SDK**: 24 (Android 7.0)
+- **Compile SDK**: 36
+- **Java Version**: 11
 
-## 📱 Features Overview
+## Usage
 
-### Authentication System
-- Secure user registration and login
-- Token-based authentication with Laravel Sanctum
-- Session management with automatic token refresh
-- Password hashing and validation
+### Getting Started
+1. **Launch the app** - You'll see the splash screen
+2. **Login** - Use your credentials or register a new account
+3. **Navigate** - Use the bottom navigation to access different features
+4. **Manage Products** - Add, edit, and view your inventory
+5. **Process Orders** - Create and manage customer orders
+6. **Manage Customers** - Add and track customer information
 
-### Product Management
-- Complete inventory tracking
-- SKU generation and management
-- Category-based organization
-- Expiry date monitoring
-- Price and quantity management
-- Search and filtering capabilities
+### Main Features
 
-### Order Processing
-- Multi-item order creation
-- Real-time total calculation
-- Order status tracking
-- Customer order history
-- Order modification and cancellation
+#### Product Management
+- **View Products**: Browse your inventory with search and filter options
+- **Add Product**: Create new products with SKU, price, quantity, and expiry date
+- **Edit Product**: Update product information and inventory levels
+- **Category Management**: Organize products by categories
 
-### Customer Management
-- Customer profile creation
-- Loyalty points system
-- Order history tracking
-- Contact information management
+#### Order Processing
+- **Create Order**: Select products and quantities for customer orders
+- **Order History**: View all orders with status tracking
+- **Order Details**: See complete order breakdown with totals
+- **Status Updates**: Change order status (pending, completed, cancelled)
 
-### User Interface
-- Material Design 3 components
-- Responsive layouts for different screen sizes
-- Dark/Light theme support
-- Intuitive navigation
-- Real-time data updates
+#### Customer Management
+- **Customer List**: View all customers with search functionality
+- **Add Customer**: Register new customers with contact information
+- **Customer Details**: View customer profile and order history
+- **Loyalty Points**: Track customer loyalty points
 
-## 🔒 Security Features
+## Development
 
-- **Authentication** - Laravel Sanctum for API authentication
-- **Authorization** - Role-based access control
-- **Data Validation** - Comprehensive input validation
-- **SQL Injection Protection** - Eloquent ORM with parameterized queries
-- **XSS Protection** - Output escaping and validation
-- **CSRF Protection** - Laravel's built-in CSRF protection
-- **Rate Limiting** - API rate limiting for security
-- **Secure Headers** - Security headers configuration
+### Building the Project
+```bash
+# Debug build
+./gradlew assembleDebug
 
-## 🧪 Testing
+# Release build
+./gradlew assembleRelease
 
-### API Testing
-- Unit tests for models and services
-- Feature tests for API endpoints
-- Database testing with factories and seeders
-- Postman collection for manual testing
+# Run tests
+./gradlew test
+```
 
-### Android Testing
-- Unit tests for business logic
-- Instrumented tests for UI components
-- Integration tests for API communication
+### Code Structure
+The app follows MVVM architecture:
+- **Models**: Data entities in `data/entities/`
+- **Views**: Activities and Fragments in `ui/`
+- **ViewModels**: Business logic in repositories
+- **Data Layer**: API calls and local storage
 
-## 📚 Documentation
+### Key Classes
 
-### API Documentation
-- Swagger/OpenAPI documentation available at `/api/documentation`
-- Postman collection included in the repository
-- Comprehensive endpoint documentation with examples
+#### Data Models
+- `Product.java` - Product entity with JSON parsing
+- `Order.java` - Order entity with items
+- `Customer.java` - Customer entity
+- `Category.java` - Category entity
+- `User.java` - User entity
 
-### Code Documentation
-- Inline code comments
-- JavaDoc for Android classes
-- PHPDoc for API methods
-- README files for each major component
+#### API Integration
+- `ApiClient.java` - HTTP client using Volley
+- `ApiConfig.java` - API configuration and URL building
+- `RequestQueueSingleton.java` - Singleton for request queue
 
-## 🤝 Contributing
+#### Repositories
+- `ProductRepository.java` - Product data operations
+- `OrderRepository.java` - Order data operations
+- `CustomerRepository.java` - Customer data operations
+- `AuthRepository.java` - Authentication operations
+
+## Testing
+
+### Unit Tests
+- **Location**: `src/test/java/`
+- **Coverage**: Business logic and data parsing
+- **Framework**: JUnit 4
+
+### Instrumented Tests
+- **Location**: `src/androidTest/java/`
+- **Coverage**: UI interactions and API integration
+- **Framework**: Espresso
+
+### Running Tests
+```bash
+# Unit tests
+./gradlew test
+
+# Instrumented tests
+./gradlew connectedAndroidTest
+
+# All tests
+./gradlew check
+```
+
+
+#### API Connection Issues
+- **Check API URL**: Ensure BASE_URL is correct in ApiConfig.java
+- **Network Permissions**: Verify INTERNET permission in AndroidManifest.xml
+- **API Server**: Ensure backend API is running and accessible
+
+#### Build Issues
+- **Gradle Sync**: Try "Sync Project with Gradle Files"
+- **Clean Build**: Use "Build > Clean Project" then rebuild
+- **SDK Issues**: Check Android SDK installation and API levels
+
+#### Runtime Issues
+- **JSON Parsing**: Check API response format matches entity classes
+- **Memory Issues**: Monitor app memory usage and optimize images
+- **Navigation**: Ensure proper fragment navigation setup
+
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass
-6. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 License
+### Development Guidelines
+- Follow Android coding standards
+- Write tests for new features
+- Update documentation for API changes
+- Use meaningful commit messages
+- Ensure all tests pass before submitting PR
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
 
-## 🆘 Support
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
 
 For support and questions:
 - Create an issue in the repository
-- Check the documentation
-- Review the API documentation at `/api/documentation`
-
-## 🔄 Version History
-
-- **v1.0.0** - Initial release with core functionality
-- **v1.1.0** - Added loyalty points system
-- **v1.2.0** - Enhanced UI with Material Design 3
-- **v1.3.0** - Added advanced search and filtering
+- Check the backend API documentation
+- Review the Android documentation
 
 ---
 
-**Note**: This system is designed for educational and small business use. For production deployment in large-scale environments, additional security measures, performance optimizations, and scalability considerations should be implemented.
+**Note**: This Android app is designed to work with the Laravel API backend. Make sure the backend API is running and accessible before using the app. For production deployment, ensure proper security measures and API endpoint configuration.
